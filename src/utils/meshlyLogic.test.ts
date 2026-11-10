@@ -127,8 +127,39 @@ test('buildPrivacyPolicyMarkdown discloses Google Play Billing IAP and Advertisi
   assert.ok(concise.includes('Advertising ID'));
 });
 
+test('parseAdMobPublisherId and buildAppAdsTxt validate Publisher IDs and format IAB app-ads.txt records', async () => {
+  const { parseAdMobPublisherId, buildAppAdsTxt } = await import('./meshlyLogic');
+  const fs = await import('node:fs');
+  const path = await import('node:path');
+
+  assert.equal(parseAdMobPublisherId('').valid, false);
+  assert.equal(parseAdMobPublisherId('pub-12345').valid, false);
+
+  const fromRawDigits = parseAdMobPublisherId('3940256099942544');
+  assert.equal(fromRawDigits.valid, true);
+  assert.equal(fromRawDigits.normalizedPubId, 'pub-3940256099942544');
+
+  const fromFullSnippet = parseAdMobPublisherId(
+    'google.com, pub-3940256099942544, DIRECT, f08c47fec0942fa0'
+  );
+  assert.equal(fromFullSnippet.valid, true);
+  assert.equal(
+    buildAppAdsTxt(fromFullSnippet.normalizedPubId!),
+    'google.com, pub-3940256099942544, DIRECT, f08c47fec0942fa0'
+  );
+
+  const staticAppAds = fs.readFileSync(path.resolve('public/app-ads.txt'), 'utf8');
+  const recordLines = staticAppAds
+    .split('\n')
+    .map((l) => l.trim())
+    .filter((l) => l.length > 0 && !l.startsWith('#'));
+  assert.equal(recordLines.length, 1);
+  assert.match(recordLines[0], /^google\.com,\s*pub-\d{16},\s*DIRECT,\s*f08c47fec0942fa0$/);
+});
+
 test('resolveInitialView supports GitHub Pages hash and query deep-links for Google Play Console', () => {
   assert.deepEqual(resolveInitialView('#privacy', ''), { mode: 'all', scrollTargetId: 'privacy' });
+  assert.deepEqual(resolveInitialView('#app-ads', ''), { mode: 'all', scrollTargetId: 'app-ads' });
   assert.deepEqual(resolveInitialView('', '?page=privacy'), {
     mode: 'privacy-focused',
     scrollTargetId: 'privacy',

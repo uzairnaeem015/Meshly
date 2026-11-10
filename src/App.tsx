@@ -185,6 +185,9 @@ export default function App() {
             <a href="#play-console" onClick={handleShowAllSections} className="hover:text-white">
               Play Console Kit
             </a>
+            <a href="./app-ads.txt" className="hover:text-white font-mono">
+              app-ads.txt
+            </a>
             <a href="?page=privacy" className="hover:text-white">
               Standalone Privacy Policy
             </a>

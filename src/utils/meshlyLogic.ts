@@ -262,6 +262,41 @@ You can delete individual messages, clear call logs, manage blocked users, rotat
 If you have questions about this Privacy Policy, please contact us at: ${safeEmail}`;
 }
 
+export const GOOGLE_TAG_AUTHORITY_ID = 'f08c47fec0942fa0';
+
+export function parseAdMobPublisherId(rawInput: string): {
+  valid: boolean;
+  normalizedPubId?: string;
+  error?: string;
+} {
+  const trimmed = rawInput.trim();
+  if (!trimmed) {
+    return {
+      valid: false,
+      error: 'Enter your 16-digit AdMob Publisher ID (for example, pub-3940256099942544).',
+    };
+  }
+
+  // Accept either a full snippet line ("google.com, pub-1234..., DIRECT, f08c47fec0942fa0") or "pub-1234..." or "1234..."
+  const fullLineMatch = trimmed.match(/pub-(\d{16})/i);
+  if (fullLineMatch) {
+    return { valid: true, normalizedPubId: `pub-${fullLineMatch[1]}` };
+  }
+
+  if (/^\d{16}$/.test(trimmed)) {
+    return { valid: true, normalizedPubId: `pub-${trimmed}` };
+  }
+
+  return {
+    valid: false,
+    error: 'Publisher ID must be "pub-" followed by 16 digits (from AdMob → Apps → View all apps → app-ads.txt).',
+  };
+}
+
+export function buildAppAdsTxt(normalizedPubId: string): string {
+  return `google.com, ${normalizedPubId}, DIRECT, ${GOOGLE_TAG_AUTHORITY_ID}`;
+}
+
 export type ActiveRouteView = 'all' | 'privacy-focused';
 
 export function resolveInitialView(hash: string, search: string): {
@@ -279,6 +314,7 @@ export function resolveInitialView(hash: string, search: string): {
   if (
     cleanHash === 'privacy' ||
     cleanHash === 'play-console' ||
+    cleanHash === 'app-ads' ||
     cleanHash === 'engineering' ||
     cleanHash === 'screenshots' ||
     cleanHash === 'features' ||
@@ -289,3 +325,4 @@ export function resolveInitialView(hash: string, search: string): {
 
   return { mode: 'all', scrollTargetId: null };
 }
+
