@@ -1,0 +1,6 @@
+{
+  "name": "Meshly: Local Wi-Fi Messenger",
+  "description": "Official GitHub Pages website, interactive populated Android preview, privacy policy, and Google Play Store listing hub for Meshly — peer-to-peer local Wi-Fi chat, file sharing, and voice/video calling.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
