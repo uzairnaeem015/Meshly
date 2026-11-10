@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Meshly – Redirecting...</title>
+    <script>
+      (function () {
+        var path = window.location.pathname || '/';
+        var lower = path.toLowerCase();
+        var segments = path.split('/').filter(Boolean);
+        var base = '/';
+        if (/github\.io$/i.test(window.location.hostname) && segments.length > 0) {
+          base = '/' + segments[0] + '/';
+        }
+        if (lower.indexOf('privacy') !== -1) {
+          window.location.replace(base + '?page=privacy' + window.location.hash);
+        } else {
+          window.location.replace(base + window.location.search + window.location.hash);
+        }
+      })();
+    </script>
+  </head>
+  <body style="background:#0B1114;color:#F1F5F6;font-family:system-ui,sans-serif;padding:2rem;">
+    <p>Redirecting to <a href="./" style="color:#00C48C;">Meshly</a>...</p>
+  </body>
+</html>

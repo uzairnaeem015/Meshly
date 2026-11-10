@@ -7,6 +7,15 @@ export default defineConfig(() => {
   return {
     base: './',
     plugins: [react(), tailwindcss()],
+    build: {
+      rollupOptions: {
+        output: {
+          entryFileNames: 'assets/meshly.js',
+          chunkFileNames: 'assets/[name].js',
+          assetFileNames: 'assets/meshly.[ext]',
+        },
+      },
+    },
     resolve: {
       alias: {
         '@': path.resolve(__dirname, '.'),

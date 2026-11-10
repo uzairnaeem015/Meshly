@@ -3,11 +3,20 @@ import { Maximize2, Smartphone, X } from 'lucide-react';
 import { APP_SCREENSHOTS } from '../data/storeContent';
 
 export const ScreenshotsShowcase: React.FC = () => {
-  const [failedIds, setFailedIds] = useState<Record<string, boolean>>({});
+  const [fallbackStepById, setFallbackStepById] = useState<Record<string, number>>({});
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
 
   const baseUrl = import.meta.env.BASE_URL || './';
   const activeModalItem = lightboxIndex !== null ? APP_SCREENSHOTS[lightboxIndex] : null;
+
+  const resolveCandidateSrc = (assetSubpath: string, step: number): string | null => {
+    const candidates = [
+      `${baseUrl}${assetSubpath}`,
+      `./public/${assetSubpath}`,
+      `./docs/${assetSubpath}`,
+    ];
+    return step < candidates.length ? candidates[step] : null;
+  };
 
   return (
     <section id="screenshots" className="py-20 border-t border-white/[0.07]">
@@ -26,8 +35,8 @@ export const ScreenshotsShowcase: React.FC = () => {
 
         <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-8 items-stretch">
           {APP_SCREENSHOTS.map((shot, index) => {
-            const fullSrc = `${baseUrl}${shot.assetSubpath}`;
-            const hasFailed = Boolean(failedIds[shot.id]);
+            const step = fallbackStepById[shot.id] ?? 0;
+            const resolvedSrc = resolveCandidateSrc(shot.assetSubpath, step);
 
             return (
               <article
@@ -36,13 +45,18 @@ export const ScreenshotsShowcase: React.FC = () => {
               >
                 <div>
                   <div className="relative rounded-xl overflow-hidden bg-[#10171A] border border-white/[0.07] aspect-[9/20]">
-                    {!hasFailed ? (
+                    {resolvedSrc ? (
                       <img
-                        src={fullSrc}
+                        src={resolvedSrc}
                         alt={`Meshly Android screenshot — ${shot.title}`}
                         referrerPolicy="no-referrer"
                         loading="lazy"
-                        onError={() => setFailedIds((prev) => ({ ...prev, [shot.id]: true }))}
+                        onError={() =>
+                          setFallbackStepById((prev) => ({
+                            ...prev,
+                            [shot.id]: (prev[shot.id] ?? 0) + 1,
+                          }))
+                        }
                         className="w-full h-full object-contain"
                       />
                     ) : (
@@ -91,7 +105,12 @@ export const ScreenshotsShowcase: React.FC = () => {
           >
             <div className="sm:col-span-6 max-h-[75vh] flex justify-center bg-[#0B1114] rounded-xl p-2 border border-white/10">
               <img
-                src={`${baseUrl}${activeModalItem.assetSubpath}`}
+                src={
+                  resolveCandidateSrc(
+                    activeModalItem.assetSubpath,
+                    fallbackStepById[activeModalItem.id] ?? 0
+                  ) || `${baseUrl}${activeModalItem.assetSubpath}`
+                }
                 alt={activeModalItem.title}
                 referrerPolicy="no-referrer"
                 className="max-h-[70vh] w-auto object-contain rounded-lg"

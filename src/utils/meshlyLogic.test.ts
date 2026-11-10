@@ -169,3 +169,20 @@ test('resolveInitialView supports GitHub Pages hash and query deep-links for Goo
     scrollTargetId: 'play-console',
   });
 });
+
+test('GitHub Pages deployment artifacts exist for Actions, /docs, and root branch modes', async () => {
+  const fs = await import('node:fs');
+  const path = await import('node:path');
+
+  const rootIndex = fs.readFileSync(path.resolve('index.html'), 'utf8');
+  assert.equal(rootIndex.includes('src="/src/main.tsx"'), false, 'index.html must not use absolute /src/main.tsx');
+  assert.equal(rootIndex.includes('src="./src/main.tsx"'), true, 'index.html must use relative ./src/main.tsx');
+  assert.equal(rootIndex.includes('./docs/assets/meshly.js'), true, 'index.html must include precompiled branch fallback');
+
+  assert.equal(fs.existsSync(path.resolve('.github/workflows/deploy.yml')), true);
+  assert.equal(fs.existsSync(path.resolve('.nojekyll')), true);
+  assert.equal(fs.existsSync(path.resolve('app-ads.txt')), true);
+  assert.equal(fs.existsSync(path.resolve('docs/index.html')), true);
+  assert.equal(fs.existsSync(path.resolve('docs/assets/meshly.js')), true);
+  assert.equal(fs.existsSync(path.resolve('docs/assets/meshly.css')), true);
+});
