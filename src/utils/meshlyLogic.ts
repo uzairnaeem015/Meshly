@@ -13,7 +13,6 @@ export interface SimulatorState {
   nearbyPeers: NearbyPeer[];
   transfers: FileTransferItem[];
   blockedGoogleIds: string[];
-  proUnlocked?: boolean;
 }
 
 export interface ListingValidationResult {
@@ -176,13 +175,6 @@ export function validateStoreListingLimits(listing: StoreListingVariant): Listin
   };
 }
 
-export function unlockProFeature(state: SimulatorState): SimulatorState {
-  return {
-    ...state,
-    proUnlocked: true,
-  };
-}
-
 export function isValidEmail(email: string): boolean {
   const trimmed = email.trim();
   if (!trimmed || trimmed.length > 254) return false;
@@ -209,16 +201,15 @@ Meshly operates directly between devices on your local Wi-Fi network or mobile h
 - **Profile Information:** Your chosen display name, optional Google email identifier, and profile photo are stored locally on your device and shared only with peers on your local network to identify you during discovery and chat requests.
 - **Messages, Files, and Call Logs:** All chat history, shared photos/videos/files, and call logs are stored locally on your device. You can delete individual messages, clear chats, clear call history, or wipe all local data at any time in **Settings > Data & Reset**.
 
-## 3. Advertising & In-App Purchases
-- **In-App Purchases:** Meshly offers one optional in-app purchase (such as unlocking Live Typing Preview Pro) processed securely through **Google Play Billing**. We do not access or store your payment card details; only your purchase entitlement status is verified via Google Play.
-- **Advertisements:** Meshly may display ads served by third-party advertising partners (such as Google AdMob) when internet connectivity is available. Ad SDKs may process device identifiers (such as the Android Advertising ID), coarse network information, and ad interaction diagnostics to serve and measure ads. You can reset or delete your Advertising ID anytime in your Android device’s **Settings > Privacy > Ads**.
+## 3. Third-Party Advertising
+- **Advertisements:** Meshly is free with no in-app purchases and may display ads served by third-party advertising partners (such as Google AdMob) when internet connectivity is available. Ad SDKs may process device identifiers (such as the Android Advertising ID), coarse network information, and ad interaction diagnostics to serve and measure ads. You can reset or delete your Advertising ID anytime in your Android device’s **Settings > Privacy > Ads**.
 
 ## 4. Permissions Used
 - **Camera (\`android.permission.CAMERA\`):** Used only when you scan a QR code, capture a photo in chat, or participate in a video call.
 - **Microphone (\`android.permission.RECORD_AUDIO\`):** Used only during active voice or video calls.
 - **Nearby Wi-Fi Devices (\`android.permission.NEARBY_WIFI_DEVICES\`):** Used to discover other Meshly users on your local network without determining your physical location.
 - **Notifications (\`android.permission.POST_NOTIFICATIONS\`):** Used to notify you of incoming messages and calls.
-- **Google Play Billing (\`com.android.vending.BILLING\`):** Used to process and restore the optional in-app purchase.
+- **Background Battery Optimization (\`android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS\`):** Allows Meshly to stay reachable on your local Wi-Fi or hotspot in the background without Android Doze suspending local peer discovery, incoming messages, file transfers, or calls.
 
 ## 5. Data Deletion
 Because your conversations and files reside on your device, you have full control over them. You can erase all stored local data at any time from **Settings > Data & Reset > Wipe All Local Data** or by uninstalling the App.
@@ -244,16 +235,15 @@ All communication data generated or configured in Meshly is stored locally on yo
 ## 3. Local Network Peer-to-Peer Communication
 When you connect to a local Wi-Fi network or mobile hotspot while using Meshly, your device broadcasts your configured display name, email identifier, and cryptographic public key to other Meshly users on the same local network so they can discover you, verify your identity, and exchange messages, files, and voice/video calls directly device-to-device.
 
-## 4. In-App Purchases & Third-Party Advertising
-- **In-App Purchase (Google Play Billing):** Meshly includes one optional in-app purchase (for example, Live Typing Preview Pro). All payment processing is handled directly by **Google Play Billing** (\`com.android.vending.BILLING\`). Meshly never receives or stores your credit card or billing credentials, retaining only purchase verification status to unlock Pro functionality.
-- **Advertisements (May Contain Ads):** Meshly may display advertisements provided by third-party ad networks (such as Google AdMob) when your device has internet access. These third-party SDKs may collect and process your Android Advertising ID, device/app diagnostics, and ad interaction metrics in accordance with Google’s Privacy & Terms. You may opt out of personalized ads or delete your Advertising ID at any time in **Android Settings -> Privacy -> Ads**.
+## 4. Third-Party Advertising
+- **Advertisements (May Contain Ads):** Meshly is free to use with no in-app purchases and may display advertisements provided by third-party ad networks (such as Google AdMob) when your device has internet access. These third-party SDKs may collect and process your Android Advertising ID, device/app diagnostics, and ad interaction metrics in accordance with Google’s Privacy & Terms. You may opt out of personalized ads or delete your Advertising ID at any time in **Android Settings -> Privacy -> Ads**.
 
 ## 5. Permissions Used
 - **Camera (\`android.permission.CAMERA\`):** Used only when you scan a peer's QR code or participate in a local video call.
 - **Microphone (\`android.permission.RECORD_AUDIO\`):** Used only during active local voice or video calls.
-- **Nearby Wi-Fi Devices & Network (\`android.permission.NEARBY_WIFI_DEVICES\`, \`INTERNET\`, \`ACCESS_WIFI_STATE\`):** Used to discover and communicate with nearby devices on your local Wi-Fi or hotspot network, and when online to validate Google Play Billing or load ads.
+- **Nearby Wi-Fi Devices & Network (\`android.permission.NEARBY_WIFI_DEVICES\`, \`INTERNET\`, \`ACCESS_WIFI_STATE\`):** Used to discover and communicate with nearby devices on your local Wi-Fi or hotspot network, and when online to load advertisements.
 - **Notifications (\`android.permission.POST_NOTIFICATIONS\`):** Used to display alerts for incoming local messages and calls.
-- **Billing (\`com.android.vending.BILLING\`):** Used strictly for the optional Google Play in-app purchase and purchase restoration.
+- **Background Battery Optimization (\`android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS\`):** Allows Meshly to maintain reliable local LAN connectivity in the background so incoming messages, file transfers, and voice/video calls are not interrupted by Android Doze mode.
 
 ## 6. Data Deletion
 You can delete individual messages, clear call logs, manage blocked users, rotate your cryptographic keys, or wipe all local app data at any time from **Settings -> Storage & Data -> Wipe All Local App Data**, or by uninstalling the App.
@@ -314,8 +304,8 @@ export function resolveInitialView(hash: string, search: string): {
   if (
     cleanHash === 'privacy' ||
     cleanHash === 'play-console' ||
-    cleanHash === 'app-ads' ||
-    cleanHash === 'engineering' ||
+    cleanHash === 'changelog' ||
+    cleanHash === 'permissions' ||
     cleanHash === 'screenshots' ||
     cleanHash === 'features' ||
     cleanHash === 'simulator'

@@ -1,6 +1,4 @@
 import React, { useState } from 'react';
-import { Check, Copy, Link2 } from 'lucide-react';
-import { buildPrivacyPolicyMarkdown, isValidEmail } from '../utils/meshlyLogic';
 
 interface PrivacyPolicySectionProps {
   defaultEmail?: string;
@@ -14,45 +12,6 @@ export const PrivacyPolicySection: React.FC<PrivacyPolicySectionProps> = ({
   onExitStandalone,
 }) => {
   const [template, setTemplate] = useState<'detailed' | 'concise'>('detailed');
-  const [activeEmail, setActiveEmail] = useState(defaultEmail);
-  const [emailInput, setEmailInput] = useState(defaultEmail);
-  const [emailError, setEmailError] = useState<string | null>(null);
-  const [emailUpdatedNotice, setEmailUpdatedNotice] = useState(false);
-  const [copiedMarkdown, setCopiedMarkdown] = useState(false);
-  const [copiedLink, setCopiedLink] = useState(false);
-
-  const markdownContent = buildPrivacyPolicyMarkdown(template, activeEmail);
-
-  const handleApplyEmail = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!isValidEmail(emailInput)) {
-      setEmailError('Enter a valid support email address (for example, support@yourdomain.com).');
-      setEmailUpdatedNotice(false);
-      return;
-    }
-    setActiveEmail(emailInput.trim());
-    setEmailError(null);
-    setEmailUpdatedNotice(true);
-    window.setTimeout(() => setEmailUpdatedNotice(false), 2500);
-  };
-
-  const handleCopyMarkdown = () => {
-    if (navigator.clipboard && navigator.clipboard.writeText) {
-      navigator.clipboard.writeText(markdownContent).catch(() => {});
-    }
-    setCopiedMarkdown(true);
-    window.setTimeout(() => setCopiedMarkdown(false), 2000);
-  };
-
-  const handleCopyDirectUrl = () => {
-    const base = window.location.origin + window.location.pathname;
-    const directPrivacyUrl = `${base}?page=privacy`;
-    if (navigator.clipboard && navigator.clipboard.writeText) {
-      navigator.clipboard.writeText(directPrivacyUrl).catch(() => {});
-    }
-    setCopiedLink(true);
-    window.setTimeout(() => setCopiedLink(false), 2000);
-  };
 
   return (
     <section id="privacy" className="py-20 border-t border-white/[0.07]">
@@ -73,7 +32,7 @@ export const PrivacyPolicySection: React.FC<PrivacyPolicySectionProps> = ({
         )}
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
-          {/* Left 4 Columns: Policy Controls & GitHub Pages URL Helper */}
+          {/* Left 4 Columns: Policy Overview & Detail Level */}
           <div className="lg:col-span-4 space-y-5">
             <div>
               <p className="text-xs font-mono text-[#00C48C]">
@@ -83,9 +42,14 @@ export const PrivacyPolicySection: React.FC<PrivacyPolicySectionProps> = ({
                 Privacy Policy for Meshly
               </h2>
               <p className="mt-2.5 text-sm text-[#94A3A8] leading-relaxed">
-                Ready for hosting on GitHub Pages. Share the direct{' '}
-                <code className="text-[#E2E8EB]">?page=privacy</code> link in Google Play Console’s
-                App Content &rarr; Privacy Policy field.
+                Hosted for Google Play Store compliance. Use the direct{' '}
+                <a
+                  href="?page=privacy"
+                  className="text-[#00C48C] hover:underline underline-offset-4 font-mono text-xs"
+                >
+                  ?page=privacy
+                </a>{' '}
+                endpoint in Google Play Console’s App Content &rarr; Privacy Policy field.
               </p>
             </div>
 
@@ -124,80 +88,16 @@ export const PrivacyPolicySection: React.FC<PrivacyPolicySectionProps> = ({
                 </div>
               </div>
 
-              <form onSubmit={handleApplyEmail} noValidate className="space-y-2.5 pt-2">
-                <label
-                  htmlFor="developer-support-email"
-                  className="block text-xs font-semibold text-white"
+              <div className="pt-3 border-t border-white/[0.07]">
+                <span className="block text-xs font-semibold text-white">
+                  Developer Support Contact
+                </span>
+                <a
+                  href={`mailto:${defaultEmail}`}
+                  className="mt-1 inline-block text-xs font-mono text-[#00C48C] hover:underline underline-offset-4"
                 >
-                  Developer Contact Email
-                </label>
-                <div className="flex items-center gap-2">
-                  <input
-                    id="developer-support-email"
-                    type="email"
-                    value={emailInput}
-                    onChange={(e) => {
-                      setEmailInput(e.target.value);
-                      if (emailError) setEmailError(null);
-                    }}
-                    placeholder="support@yourdomain.com"
-                    className="flex-1 min-w-0 px-3 py-2 rounded-lg bg-[#0B1114] border border-white/10 text-xs text-white placeholder:text-[#6E7F85] focus:outline-none focus:border-[#00C48C]"
-                  />
-                  <button
-                    type="submit"
-                    className="px-3.5 py-2 rounded-lg bg-white/[0.08] hover:bg-white/15 text-xs font-semibold text-white transition-colors whitespace-nowrap shrink-0"
-                  >
-                    Update
-                  </button>
-                </div>
-                {emailError && (
-                  <p role="alert" className="text-xs text-amber-300">
-                    {emailError}
-                  </p>
-                )}
-                {emailUpdatedNotice && (
-                  <p role="status" className="text-xs text-[#00C48C]">
-                    Contact email updated across policy text and Markdown export.
-                  </p>
-                )}
-              </form>
-
-              <div className="pt-3 border-t border-white/[0.07] flex flex-col gap-2">
-                <button
-                  type="button"
-                  onClick={handleCopyMarkdown}
-                  className="w-full py-2.5 px-4 rounded-lg bg-[#00C48C] hover:bg-[#1AD49E] text-[#042319] text-xs font-semibold inline-flex items-center justify-center gap-2 transition-colors whitespace-nowrap"
-                >
-                  {copiedMarkdown ? (
-                    <>
-                      <Check className="w-4 h-4" />
-                      <span>Copied Policy Markdown</span>
-                    </>
-                  ) : (
-                    <>
-                      <Copy className="w-4 h-4" />
-                      <span>Copy Raw Markdown</span>
-                    </>
-                  )}
-                </button>
-
-                <button
-                  type="button"
-                  onClick={handleCopyDirectUrl}
-                  className="w-full py-2.5 px-4 rounded-lg bg-white/[0.06] hover:bg-white/10 text-white text-xs font-medium inline-flex items-center justify-center gap-2 transition-colors whitespace-nowrap"
-                >
-                  {copiedLink ? (
-                    <>
-                      <Check className="w-4 h-4 text-[#00C48C]" />
-                      <span>Copied Standalone Policy URL</span>
-                    </>
-                  ) : (
-                    <>
-                      <Link2 className="w-4 h-4" />
-                      <span>Copy Standalone ?page=privacy URL</span>
-                    </>
-                  )}
-                </button>
+                  {defaultEmail}
+                </a>
               </div>
             </div>
           </div>
@@ -274,30 +174,20 @@ export const PrivacyPolicySection: React.FC<PrivacyPolicySectionProps> = ({
 
                 <section>
                   <h4 className="text-base sm:text-lg font-display font-bold text-white">
-                    4. In-App Purchases &amp; Third-Party Advertising
+                    4. Third-Party Advertising
                   </h4>
-                  <ul className="mt-2.5 space-y-2 text-[#94A3A8] list-disc pl-5">
-                    <li>
-                      <strong className="text-[#E2E8EB]">
-                        In-App Purchase (Google Play Billing):
-                      </strong>{' '}
-                      Meshly includes one optional in-app purchase (such as unlocking Live Typing
-                      Preview Pro). All payment transactions are processed securely by{' '}
-                      <strong className="text-[#E2E8EB]">Google Play Billing</strong> (
-                      <code className="text-xs text-[#00C48C]">com.android.vending.BILLING</code>).
-                      Meshly never receives or stores your credit card or payment details, retaining
-                      only purchase entitlement status to unlock Pro features.
-                    </li>
-                    <li>
-                      <strong className="text-[#E2E8EB]">Advertisements (May Contain Ads):</strong>{' '}
-                      Meshly may display advertisements served by third-party ad networks (such as
-                      Google AdMob) when your device has internet connectivity. Advertising SDKs may
-                      collect and process your Android Advertising ID, coarse IP-based network
-                      state, and ad interaction diagnostics to serve and measure ads. You can opt
-                      out of personalized ads or reset/delete your Advertising ID anytime in{' '}
-                      <strong className="text-[#E2E8EB]">Android Settings &rarr; Privacy &rarr; Ads</strong>.
-                    </li>
-                  </ul>
+                  <p className="mt-2 text-[#94A3A8]">
+                    Meshly is free to use with no in-app purchases and may display advertisements
+                    served by third-party ad networks (such as Google AdMob) when your device has
+                    internet connectivity. Advertising SDKs may collect and process your Android
+                    Advertising ID, coarse IP-based network state, and ad interaction diagnostics to
+                    serve and measure ads. You can opt out of personalized ads or reset/delete your
+                    Advertising ID anytime in{' '}
+                    <strong className="text-[#E2E8EB]">
+                      Android Settings &rarr; Privacy &rarr; Ads
+                    </strong>
+                    .
+                  </p>
                 </section>
 
                 <section>
@@ -326,7 +216,7 @@ export const PrivacyPolicySection: React.FC<PrivacyPolicySectionProps> = ({
                       , <code className="text-xs text-[#00C48C]">INTERNET</code>,{' '}
                       <code className="text-xs text-[#00C48C]">ACCESS_WIFI_STATE</code>): Used to
                       discover and communicate with nearby devices on your local Wi-Fi or hotspot
-                      network, and when online to validate Google Play Billing or load ads.
+                      network, and when online to load advertisements.
                     </li>
                     <li>
                       <strong className="text-[#E2E8EB]">Notifications</strong> (
@@ -336,10 +226,13 @@ export const PrivacyPolicySection: React.FC<PrivacyPolicySectionProps> = ({
                       ): Used to display alerts for incoming local messages and calls.
                     </li>
                     <li>
-                      <strong className="text-[#E2E8EB]">Billing</strong> (
-                      <code className="text-xs text-[#00C48C]">com.android.vending.BILLING</code>):
-                      Used strictly for the optional Google Play in-app purchase and purchase
-                      restoration.
+                      <strong className="text-[#E2E8EB]">Background Battery Optimization</strong> (
+                      <code className="text-xs text-[#00C48C]">
+                        android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS
+                      </code>
+                      ): Allows Meshly to stay reachable on your local Wi-Fi or hotspot in the
+                      background without Android Doze suspending peer discovery, incoming messages,
+                      file transfers, or voice/video calls.
                     </li>
                   </ul>
                 </section>
@@ -365,10 +258,10 @@ export const PrivacyPolicySection: React.FC<PrivacyPolicySectionProps> = ({
                   <p className="mt-2 text-[#94A3A8]">
                     If you have questions about this Privacy Policy, please contact us at:{' '}
                     <a
-                      href={`mailto:${activeEmail}`}
+                      href={`mailto:${defaultEmail}`}
                       className="text-[#00C48C] underline underline-offset-4 font-mono text-sm"
                     >
-                      {activeEmail}
+                      {defaultEmail}
                     </a>
                   </p>
                 </section>
@@ -410,24 +303,15 @@ export const PrivacyPolicySection: React.FC<PrivacyPolicySectionProps> = ({
 
                 <section>
                   <h4 className="text-base sm:text-lg font-display font-bold text-white">
-                    3. Advertising &amp; In-App Purchases
+                    3. Third-Party Advertising
                   </h4>
-                  <ul className="mt-2.5 space-y-2 text-[#94A3A8] list-disc pl-5">
-                    <li>
-                      <strong className="text-[#E2E8EB]">In-App Purchases:</strong> Meshly offers
-                      one optional in-app purchase (such as Live Typing Preview Pro) processed
-                      securely via <strong className="text-[#E2E8EB]">Google Play Billing</strong>.
-                      We do not access or store your payment card information.
-                    </li>
-                    <li>
-                      <strong className="text-[#E2E8EB]">Advertisements:</strong> Meshly may display
-                      ads served by third-party advertising partners (such as Google AdMob) when
-                      internet access is available. Ad SDKs may process your Android Advertising ID
-                      and ad diagnostics to deliver and measure ads. You can reset or delete your
-                      Advertising ID anytime in{' '}
-                      <strong className="text-[#E2E8EB]">Settings &gt; Privacy &gt; Ads</strong>.
-                    </li>
-                  </ul>
+                  <p className="mt-2 text-[#94A3A8]">
+                    Meshly is free with no in-app purchases and may display ads served by
+                    third-party advertising partners (such as Google AdMob) when internet access is
+                    available. Ad SDKs may process your Android Advertising ID and ad diagnostics to
+                    deliver and measure ads. You can reset or delete your Advertising ID anytime in{' '}
+                    <strong className="text-[#E2E8EB]">Settings &gt; Privacy &gt; Ads</strong>.
+                  </p>
                 </section>
 
                 <section>
@@ -464,9 +348,12 @@ export const PrivacyPolicySection: React.FC<PrivacyPolicySectionProps> = ({
                       ): Used to notify you of incoming messages and calls.
                     </li>
                     <li>
-                      <strong className="text-[#E2E8EB]">Google Play Billing</strong> (
-                      <code className="text-xs text-[#00C48C]">com.android.vending.BILLING</code>):
-                      Used to process and restore the optional in-app purchase.
+                      <strong className="text-[#E2E8EB]">Background Battery Optimization</strong> (
+                      <code className="text-xs text-[#00C48C]">
+                        android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS
+                      </code>
+                      ): Allows Meshly to maintain uninterrupted local network reachability in the
+                      background so incoming messages, file transfers, and calls arrive reliably.
                     </li>
                   </ul>
                 </section>
@@ -492,10 +379,10 @@ export const PrivacyPolicySection: React.FC<PrivacyPolicySectionProps> = ({
                   <p className="mt-2 text-[#94A3A8]">
                     If you have questions about this Privacy Policy, please contact us at:{' '}
                     <a
-                      href={`mailto:${activeEmail}`}
+                      href={`mailto:${defaultEmail}`}
                       className="text-[#00C48C] underline underline-offset-4 font-mono text-sm"
                     >
-                      {activeEmail}
+                      {defaultEmail}
                     </a>
                   </p>
                 </section>

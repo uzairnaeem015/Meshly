@@ -1,5 +1,5 @@
 import React from 'react';
-import { ENGINEERING_FIXES, PERMISSIONS_TABLE } from '../data/storeContent';
+import { PERMISSIONS_TABLE } from '../data/storeContent';
 
 export const FeaturesAndEngineering: React.FC = () => {
   return (
@@ -126,77 +126,38 @@ export const FeaturesAndEngineering: React.FC = () => {
         </div>
       </section>
 
-      {/* Engineering Stability Postmortem (Part 1) & Android Permissions Justification */}
-      <section id="engineering" className="py-20 border-t border-white/[0.07]">
+      {/* Android Permissions Transparency (Including Background Battery Optimization) */}
+      <section id="permissions" className="py-20 border-t border-white/[0.07]">
         <div className="max-w-[1200px] mx-auto px-6">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
-            {/* Part 1: v1.2.0 Startup Crash Fixes & Architecture */}
-            <div className="lg:col-span-7">
-              <p className="text-xs font-mono text-[#00C48C]">
-                Release Engineering · Version 1.2.0 Stability Hardening
-              </p>
-              <h2 className="mt-2 text-3xl font-display font-bold tracking-tight text-[#F1F5F6] [text-wrap:balance]">
-                What caused the startup crash and how v1.2.0 fixed it
-              </h2>
-              <p className="mt-3 text-sm sm:text-base text-[#94A3A8] leading-relaxed">
-                Production hardening in Meshly v1.2.0 eliminated coroutine thread-pool exhaustion,
-                Android 12+ foreground service race conditions during runtime permission dialogs,
-                and Room schema migration mismatches.
-              </p>
+          <div className="max-w-2xl">
+            <p className="text-xs font-mono text-[#00C48C]">
+              Zero Sensitive Declarations · Least-Privilege Runtime Access
+            </p>
+            <h2 className="mt-2 text-3xl sm:text-4xl font-display font-bold tracking-tight text-[#F1F5F6] [text-wrap:balance]">
+              Android permissions transparency
+            </h2>
+            <p className="mt-3 text-base text-[#94A3A8] leading-relaxed">
+              Meshly never accesses GPS or physical location. Every Android manifest permission is
+              scoped strictly to local peer discovery, background LAN reachability, QR pairing, or
+              live voice and video calls.
+            </p>
+          </div>
 
-              <div className="mt-8 space-y-5">
-                {ENGINEERING_FIXES.map((item) => (
-                  <article
-                    key={item.index}
-                    className="rounded-2xl bg-[#131C20] border border-white/[0.08] p-6"
-                  >
-                    <h3 className="text-base sm:text-lg font-display font-bold text-[#F1F5F6]">
-                      {item.index}. {item.title}
-                    </h3>
-                    <div className="mt-3 space-y-2.5 text-sm leading-relaxed">
-                      <p className="text-[#94A3A8]">
-                        <strong className="text-[#E2E8EB] font-semibold">Root Cause: </strong>
-                        {item.rootCause}
-                      </p>
-                      <p className="text-[#CBD5D9]">
-                        <strong className="text-[#00C48C] font-semibold">v1.2.0 Fix: </strong>
-                        {item.resolution}
-                      </p>
-                    </div>
-                  </article>
-                ))}
+          <div className="mt-10 grid grid-cols-1 md:grid-cols-2 gap-5">
+            {PERMISSIONS_TABLE.map((row) => (
+              <div
+                key={row.permission}
+                className="rounded-2xl bg-[#131C20] border border-white/[0.08] p-6"
+              >
+                <div className="flex flex-wrap items-baseline justify-between gap-2">
+                  <span className="font-mono text-xs font-semibold text-[#F1F5F6]">
+                    {row.permission}
+                  </span>
+                  <code className="text-[11px] font-mono text-[#00C48C]">{row.manifestId}</code>
+                </div>
+                <p className="mt-2.5 text-sm text-[#94A3A8] leading-relaxed">{row.purpose}</p>
               </div>
-            </div>
-
-            {/* Android Permissions Reference Table */}
-            <div className="lg:col-span-5">
-              <p className="text-xs font-mono text-[#00C48C]">
-                Zero Sensitive Declarations · Least-Privilege Runtime Access
-              </p>
-              <h2 className="mt-2 text-2xl sm:text-3xl font-display font-bold tracking-tight text-[#F1F5F6] [text-wrap:balance]">
-                Android permissions transparency
-              </h2>
-              <p className="mt-3 text-sm text-[#94A3A8] leading-relaxed">
-                Meshly never accesses GPS or physical location. Every Android manifest permission is
-                scoped strictly to local peer discovery, QR pairing, or live calls.
-              </p>
-
-              <div className="mt-8 rounded-2xl bg-[#131C20] border border-white/[0.08] divide-y divide-white/[0.07]">
-                {PERMISSIONS_TABLE.map((row) => (
-                  <div key={row.permission} className="p-5">
-                    <div className="flex flex-wrap items-baseline justify-between gap-2">
-                      <span className="font-mono text-xs font-semibold text-[#F1F5F6]">
-                        {row.permission}
-                      </span>
-                      <code className="text-[11px] font-mono text-[#00C48C]">{row.manifestId}</code>
-                    </div>
-                    <p className="mt-2 text-xs sm:text-sm text-[#94A3A8] leading-relaxed">
-                      {row.purpose}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            </div>
+            ))}
           </div>
         </div>
       </section>

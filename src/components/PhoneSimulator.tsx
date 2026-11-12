@@ -43,7 +43,6 @@ import {
   sendDiscoveryRequest,
   SimulatorState,
   toggleTransferPause,
-  unlockProFeature,
 } from '../utils/meshlyLogic';
 
 type PhoneTab = 'chats' | 'calls' | 'people' | 'transfers' | 'settings';
@@ -62,7 +61,6 @@ export const PhoneSimulator: React.FC = () => {
     nearbyPeers: INITIAL_NEARBY_PEERS,
     transfers: INITIAL_TRANSFERS,
     blockedGoogleIds: [],
-    proUnlocked: false,
   });
   const [calls, setCalls] = useState<CallRecord[]>(INITIAL_CALLS);
   const [searchQuery, setSearchQuery] = useState('');
@@ -520,11 +518,7 @@ export const PhoneSimulator: React.FC = () => {
                               chat.typing ? 'text-[#00C48C] font-medium' : 'text-[#94A3A8]'
                             }`}
                           >
-                            {chat.typing
-                              ? state.proUnlocked
-                                ? 'Live typing: "Sending raw audio stem next..."'
-                                : 'Typing over local Wi-Fi...'
-                              : chat.lastMessage}
+                            {chat.typing ? 'Typing over local Wi-Fi...' : chat.lastMessage}
                           </span>
                           {chat.unreadCount > 0 && (
                             <span className="font-mono text-[10px] font-bold text-[#042319] bg-[#00C48C] w-5 h-5 rounded-full flex items-center justify-center shrink-0 tabular-nums">
@@ -786,34 +780,16 @@ export const PhoneSimulator: React.FC = () => {
                 </div>
               </div>
 
-              {/* 1 In-App Purchase: Live Typing Preview PRO (Matches screenshot_3_e239b91b.png) */}
-              <div className="p-3 rounded-2xl bg-[#162024] border border-white/[0.06] flex items-center justify-between gap-3">
-                <div className="min-w-0">
+              <div className="divide-y divide-white/[0.06] rounded-2xl bg-[#162024] border border-white/[0.06] px-3">
+                <div className="py-2.5">
                   <div className="text-xs font-semibold text-white">
-                    Live Typing Preview · <span className="font-mono text-amber-300">PRO</span>
+                    Permissions &amp; Background Battery
                   </div>
-                  <div className="text-[11px] text-[#94A3A8] leading-snug mt-0.5">
-                    {state.proUnlocked
-                      ? 'Unlocked via Google Play Billing — live keystrokes active'
-                      : 'Unlock to see what other users are writing as they type'}
+                  <div className="text-[11px] text-[#94A3A8]">
+                    Camera, Mic, Wi-Fi, Alerts &amp; Unrestricted Battery active
                   </div>
                 </div>
-                <button
-                  type="button"
-                  disabled={Boolean(state.proUnlocked)}
-                  onClick={() => setState((prev) => unlockProFeature(prev))}
-                  aria-label="Unlock Live Typing Preview Pro"
-                  className={`px-3.5 py-1.5 rounded-full text-xs font-semibold shrink-0 whitespace-nowrap transition-colors ${
-                    state.proUnlocked
-                      ? 'bg-[#0D4A3A] text-[#6EE7B7] cursor-default'
-                      : 'bg-[#00B37E] hover:bg-[#00C98D] text-[#042319]'
-                  }`}
-                >
-                  {state.proUnlocked ? 'Unlocked' : 'Unlock'}
-                </button>
-              </div>
 
-              <div className="divide-y divide-white/[0.06] rounded-2xl bg-[#162024] border border-white/[0.06] px-3">
                 <div className="py-2.5">
                   <div className="text-xs font-semibold text-white">Privacy &amp; Block List</div>
                   <div className="text-[11px] text-[#94A3A8] font-mono tabular-nums">

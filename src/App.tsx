@@ -5,6 +5,7 @@ import { PhoneSimulator } from './components/PhoneSimulator';
 import { ScreenshotsShowcase } from './components/ScreenshotsShowcase';
 import { FeaturesAndEngineering } from './components/FeaturesAndEngineering';
 import { PlayConsoleHub } from './components/PlayConsoleHub';
+import { ChangelogSection } from './components/ChangelogSection';
 import { PrivacyPolicySection } from './components/PrivacyPolicySection';
 import { ActiveRouteView, resolveInitialView } from './utils/meshlyLogic';
 
@@ -61,7 +62,7 @@ export default function App() {
                   {/* Left 7 Columns: Core Value Proposition */}
                   <div className="lg:col-span-7">
                     <p className="text-xs sm:text-sm font-mono text-[#00C48C]">
-                      Android Peer-to-Peer Messenger · Free · Contains Ads · In-App Purchases
+                      Android Peer-to-Peer Messenger · Free · Contains Ads
                     </p>
 
                     <h1 className="mt-4 font-display font-bold tracking-tight text-[#F1F5F6] text-[clamp(2.25rem,4vw,3.75rem)] leading-[1.08] [text-wrap:balance]">
@@ -88,14 +89,14 @@ export default function App() {
                         href="#play-console"
                         className="inline-flex items-center justify-center px-5 py-3 rounded-xl bg-white/[0.06] hover:bg-white/10 border border-white/10 text-[#F1F5F6] font-medium text-sm transition-colors duration-150 whitespace-nowrap shrink-0"
                       >
-                        Google Play Listing Copy
+                        View Play Store Listing
                       </a>
                     </div>
 
                     <p className="mt-6 text-xs text-[#94A3A8]">
                       Try the populated Android preview on the right: search accepted contacts, send
-                      a local LAN message, approve peer chat requests, or unlock Live Typing Preview
-                      Pro in Settings.
+                      a local LAN message, approve peer chat requests, or test a local voice and
+                      video call.
                     </p>
                   </div>
 
@@ -149,11 +150,14 @@ export default function App() {
             {/* Real Attached Android Screenshots */}
             <ScreenshotsShowcase />
 
-            {/* Core Capabilities, v1.2.0 Crash Fix Engineering & Permissions */}
+            {/* Core Capabilities & Android Permissions */}
             <FeaturesAndEngineering />
 
             {/* Complete Google Play Store Listing & Console Kit */}
             <PlayConsoleHub />
+
+            {/* Dedicated Changelog Section (v1.2.0 Stability Hardening) */}
+            <ChangelogSection />
 
             {/* Official Ready-to-Host Privacy Policy */}
             <PrivacyPolicySection />
@@ -179,14 +183,14 @@ export default function App() {
             <a href="#screenshots" onClick={handleShowAllSections} className="hover:text-white">
               Screenshots
             </a>
-            <a href="#engineering" onClick={handleShowAllSections} className="hover:text-white">
-              v1.2.0 Release Notes
+            <a href="#permissions" onClick={handleShowAllSections} className="hover:text-white">
+              Permissions
             </a>
             <a href="#play-console" onClick={handleShowAllSections} className="hover:text-white">
-              Play Console Kit
+              Play Listing
             </a>
-            <a href="./app-ads.txt" className="hover:text-white font-mono">
-              app-ads.txt
+            <a href="#changelog" onClick={handleShowAllSections} className="hover:text-white">
+              Changelog
             </a>
             <a href="?page=privacy" className="hover:text-white">
               Standalone Privacy Policy

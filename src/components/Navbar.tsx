@@ -42,18 +42,18 @@ export const Navbar: React.FC<NavbarProps> = ({ onShowAllSections }) => {
             Screenshots
           </a>
           <a
-            href="#engineering"
-            onClick={handleNavClick}
-            className="hover:text-[#F1F5F6] hover:underline underline-offset-4 transition-colors duration-150 whitespace-nowrap shrink-0"
-          >
-            Engineering
-          </a>
-          <a
             href="#play-console"
             onClick={handleNavClick}
             className="hover:text-[#F1F5F6] hover:underline underline-offset-4 transition-colors duration-150 whitespace-nowrap shrink-0"
           >
             Play Listing
+          </a>
+          <a
+            href="#changelog"
+            onClick={handleNavClick}
+            className="hover:text-[#F1F5F6] hover:underline underline-offset-4 transition-colors duration-150 whitespace-nowrap shrink-0"
+          >
+            Changelog
           </a>
           <a
             href="#privacy"
@@ -96,11 +96,11 @@ export const Navbar: React.FC<NavbarProps> = ({ onShowAllSections }) => {
           <a href="#screenshots" onClick={handleNavClick} className="py-2 hover:text-white">
             Screenshots
           </a>
-          <a href="#engineering" onClick={handleNavClick} className="py-2 hover:text-white">
-            Engineering
-          </a>
           <a href="#play-console" onClick={handleNavClick} className="py-2 hover:text-white">
             Play Listing
+          </a>
+          <a href="#changelog" onClick={handleNavClick} className="py-2 hover:text-white">
+            Changelog
           </a>
           <a href="#privacy" onClick={handleNavClick} className="py-2 hover:text-white">
             Privacy Policy

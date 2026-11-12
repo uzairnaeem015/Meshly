@@ -416,13 +416,12 @@ export const APP_SCREENSHOTS = [
   },
 ];
 
-export const STORE_LISTING_VARIANTS: StoreListingVariant[] = [
-  {
-    id: 'variant-b',
-    label: 'Listing B: Meshly: Local Wi-Fi Messenger',
-    appName: 'Meshly: Local Wi-Fi Messenger',
-    shortDescription: 'Chat, share files, and make voice or video calls over local Wi-Fi or Hotspot.',
-    fullDescription: `Meshly is a local peer-to-peer messenger that lets you chat, share photos, videos, and files, and make real-time voice and video calls with people on the same Wi-Fi network or mobile hotspot — with no internet connection or cloud servers required.
+export const MESSENGER_STORE_LISTING: StoreListingVariant = {
+  id: 'variant-b',
+  label: 'Meshly: Local Wi-Fi Messenger',
+  appName: 'Meshly: Local Wi-Fi Messenger',
+  shortDescription: 'Chat, share files, and make voice or video calls over local Wi-Fi or Hotspot.',
+  fullDescription: `Meshly is a local peer-to-peer messenger that lets you chat, share photos, videos, and files, and make real-time voice and video calls with people on the same Wi-Fi network or mobile hotspot — with no internet connection or cloud servers required.
 
 WHY USE MESHLY?
 Whether you are traveling on a cruise ship or flight, staying at a hotel, working on a campus or job site with spotty internet, or collaborating in a home or office LAN, Meshly connects nearby Android devices directly over your local Wi-Fi router or phone hotspot.
@@ -435,56 +434,18 @@ KEY FEATURES
 • Instant QR Code & Manual IP Pairing: Connect immediately by scanning another user's in-app QR code with your camera, picking a QR screenshot from your gallery, or entering a local IP address in Settings.
 • Custom Chat Wallpapers & Contact Info: Personalize your chat background with built-in color themes or custom gallery photos, and tap any contact's header to browse shared media, files, and verification details.
 • 100% On-Device Storage: All messages, call logs, and received files stay in your device's local storage or your chosen folder. No external cloud database is ever used.`,
-    category: 'Communication',
-    tags: ['Messaging', 'Communication', 'File Sharing', 'Network Tools'],
-    reviewerInstructions: `Meshly operates locally over Wi-Fi / LAN without requiring any backend server account.
+  category: 'Communication',
+  tags: ['Messaging', 'Communication', 'File Sharing', 'Network Tools'],
+  reviewerInstructions: `Meshly operates locally over Wi-Fi / LAN without requiring any backend server account.
 1. On the Welcome screen, tap "Get Started", enter any First Name, Last Name, and email identifier (or pick a device Google account), and tap "Launch Meshly".
-2. You can immediately explore Chats, Calls, People, Transfers, QR Code pairing, and Settings (including the optional Live Typing Preview PRO in-app purchase) on a single device, or install the app on two devices on the same Wi-Fi network to test live P2P messaging, file transfers, and voice/video calling.`,
-    dataSafetySummary:
-      'Local P2P chats, calls, and files are never collected on developer servers. Declare third-party Advertising SDK & Google Play Billing data types in Data Safety if ads and the 1 in-app purchase are active.',
-    dataSafetyNote:
-      'Play Console Data Safety guidance: Messages, call logs, and shared files stay strictly on-device / local P2P and are not collected. Because the app has 1 in-app purchase and may contain ads, select "Yes" in Data Safety if using an ad SDK (e.g., Google AdMob) to declare Device or other IDs (Advertising ID), Diagnostics, and App interactions for Advertising/Analytics, plus Financial info -> Purchase history for App functionality (Google Play Billing entitlement).',
-  },
-  {
-    id: 'variant-a',
-    label: 'Listing A: Meshly: Local Wi-Fi Chat',
-    appName: 'Meshly: Local Wi-Fi Chat',
-    shortDescription: 'Chat, share files, and make voice or video calls over local Wi-Fi or Hotspot.',
-    fullDescription: `Meshly is a fast, private peer-to-peer messenger that lets you chat, share files, and make real-time voice and video calls with people on the same Wi-Fi network or mobile hotspot — with no internet connection or cloud servers required.
+2. You can immediately explore Chats, Calls, People, Transfers, QR Code pairing, and Settings on a single device, or install the app on two devices on the same Wi-Fi network to test live P2P messaging, file transfers, and voice/video calling.`,
+  dataSafetySummary:
+    'Local P2P chats, calls, and files are never collected on developer servers. Declare third-party Advertising SDK data types in Data Safety when ads are active.',
+  dataSafetyNote:
+    'Play Console Data Safety guidance: Messages, call logs, and shared files stay strictly on-device / local P2P and are not collected. Because the app may contain ads, select "Yes" in Data Safety if using an ad SDK (e.g., Google AdMob) to declare Device or other IDs (Advertising ID), Diagnostics, and App interactions for Advertising/Analytics.',
+};
 
-Whether you are traveling, on a flight or cruise, working in a campus or office network, or in an area with poor cellular coverage, Meshly connects directly between Android devices on your local network.
-
-KEY FEATURES
-
-• Instant Local Wi-Fi & Hotspot Messaging
-Send and receive messages directly between nearby devices on the same Wi-Fi router or phone hotspot. Includes typing indicators, delivery/read receipts, message replies, and date-grouped conversation timelines.
-
-• Direct Voice & Video Calling
-Place low-latency peer-to-peer voice and video calls over your local network. Switch between front and rear cameras, toggle speakerphone or mute, and view your complete call history with date and time stamps.
-
-• High-Speed File, Photo & Video Sharing
-Send original-quality photos, videos, and documents directly from device to device without cloud upload limits. Automatic SHA-256 integrity verification and resumable transfers ensure large files arrive intact.
-
-• Easy QR Code Pairing & Chat Requests
-Scan another user's Meshly QR code with your camera or import a QR image from your gallery to connect immediately. Incoming chat requests require your approval before a conversation starts, and unwanted requests can be rejected and blocked by Google ID.
-
-• Customizable & Clean Experience
-Personalize your chats with built-in color wallpaper themes or your own custom gallery photos. View shared media and files per contact, manage app permissions in one place, and switch between Light, Dark, and System themes.
-
-• 100% On-Device Storage
-All messages, call logs, and received files stay on your device in your local Meshly storage folder.`,
-    category: 'Communication',
-    tags: ['Messaging', 'Video calling', 'File sharing', 'Communication', 'Tools'],
-    reviewerInstructions: `Meshly operates over a local Wi-Fi network without requiring an external server account.
-1. On first launch, tap "Continue" on the Welcome screen, enter any first/last name (or pick a device Google account), and tap "Start Using Meshly".
-2. You can immediately explore Chats, Calls, People, Transfers, QR code generation/scanning, and Settings (including the 1 optional Pro in-app purchase) on a single device.
-3. To test live peer-to-peer chat, file transfer, or voice/video calling between two devices, connect two Android devices to the same Wi-Fi network or mobile hotspot.`,
-    dataSafetySummary:
-      'Zero developer cloud servers for messages, calls, or files. Declare Advertising ID / Diagnostics (for Ads) and Purchase History (for the 1 Google Play Billing IAP) in Play Console Data Safety.',
-    dataSafetyNote:
-      'All personal conversations, photos/files, and voice/video streams stay on-device and transmit peer-to-peer on the local network. For the 1 in-app purchase and ads support, declare Google Play Billing purchase entitlement under App Functionality and your ad SDK’s standard Device ID / Ad interaction fields under Advertising or Marketing.',
-  },
-];
+export const STORE_LISTING_VARIANTS: StoreListingVariant[] = [MESSENGER_STORE_LISTING];
 
 export const PERMISSIONS_TABLE = [
   {
@@ -510,10 +471,16 @@ export const PERMISSIONS_TABLE = [
     purpose: 'Used to alert the user of incoming local messages, file transfers, and voice/video calls.',
   },
   {
-    permission: 'LOCAL LAN, BILLING & ADS',
-    manifestId: 'INTERNET · ACCESS_WIFI_STATE · CHANGE_WIFI_MULTICAST_STATE · BILLING',
+    permission: 'BACKGROUND BATTERY',
+    manifestId: 'android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS',
     purpose:
-      'Used for local LAN TCP/UDP sockets and mDNS (_meshly._tcp) discovery, plus Google Play Billing (1 optional Pro in-app purchase) and ad delivery when internet is available.',
+      'Allows Meshly to remain reachable on your local Wi-Fi or hotspot in the background without Android Doze suspending mDNS peer discovery, incoming messages, file transfers, or calls.',
+  },
+  {
+    permission: 'LOCAL LAN & ADS',
+    manifestId: 'INTERNET · ACCESS_WIFI_STATE · CHANGE_WIFI_MULTICAST_STATE',
+    purpose:
+      'Used for local LAN TCP/UDP sockets and mDNS (_meshly._tcp) discovery on your local Wi-Fi or hotspot, plus ad delivery when internet connectivity is available.',
   },
 ];
 
@@ -547,8 +514,8 @@ export const ENGINEERING_FIXES = [
 export const COMPLIANCE_DECLARATIONS = [
   { label: 'App or Game', value: 'App (Communication)' },
   {
-    label: 'Pricing & In-App Purchases',
-    value: 'Free download · 1 In-App Purchase (Live Typing Preview PRO via Google Play Billing)',
+    label: 'Pricing & Monetization',
+    value: 'Free download · No In-App Purchases',
   },
   {
     label: 'Contains Ads Declaration',
@@ -556,7 +523,7 @@ export const COMPLIANCE_DECLARATIONS = [
   },
   {
     label: 'Digital Goods Purchases (IARC)',
-    value: 'Yes · 1 optional one-time Pro feature unlock via Google Play Billing',
+    value: 'No · Does not offer in-app purchases',
   },
   { label: 'App Access', value: 'All core functionality available without access restrictions' },
   { label: 'Target Age Group', value: '13–15, 16–17, 18 and over (Not directed to under 13 / No Families Policy trigger)' },
