@@ -144,6 +144,17 @@ test('UI components hide app-ads.txt setup and exclude Copy/Update buttons while
   assert.equal(privacySrc.includes('>Update<'), false);
 
   assert.equal(fs.existsSync(path.resolve('public/app-ads.txt')), true);
+  assert.equal(
+    fs.readFileSync(path.resolve('public/app-ads.txt'), 'utf8').trim(),
+    fs.readFileSync(path.resolve('app-ads.txt'), 'utf8').trim()
+  );
   assert.equal(fs.existsSync(path.resolve('docs/index.html')), true);
   assert.equal(fs.existsSync(path.resolve('docs/assets/meshly.js')), true);
+
+  const { CHANGELOG_HIGHLIGHTS } = await import('../data/storeContent');
+  const combinedChangelog = CHANGELOG_HIGHLIGHTS.map((c) => `${c.title} ${c.description}`).join(' ');
+  assert.match(combinedChangelog, /Bluetooth/i);
+  assert.match(combinedChangelog, /Wi-Fi Direct/i);
+  assert.match(combinedChangelog, /Background Battery/i);
+  assert.match(combinedChangelog, /General/i);
 });

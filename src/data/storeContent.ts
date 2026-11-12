@@ -484,6 +484,27 @@ export const PERMISSIONS_TABLE = [
   },
 ];
 
+export const CHANGELOG_HIGHLIGHTS = [
+  {
+    tag: 'Connectivity',
+    title: 'Bluetooth & Wi-Fi Direct Support',
+    description:
+      'Added peer-to-peer Bluetooth and Wi-Fi Direct transport support so nearby Android devices can discover peers, chat, and transfer files even when no Wi-Fi router or hotspot is available.',
+  },
+  {
+    tag: 'Background Reliability',
+    title: 'Added Background Battery Permission',
+    description:
+      'Added unrestricted background battery support (REQUEST_IGNORE_BATTERY_OPTIMIZATIONS) to keep local discovery, incoming messages, file transfers, and calls active without Android Doze interruptions.',
+  },
+  {
+    tag: 'Maintenance',
+    title: 'General Fixes & Polish',
+    description:
+      'General bug fixes, smoother peer session recovery across network switches, and reliability improvements across Chats, Calls, People, and Transfers.',
+  },
+];
+
 export const ENGINEERING_FIXES = [
   {
     index: '01',
