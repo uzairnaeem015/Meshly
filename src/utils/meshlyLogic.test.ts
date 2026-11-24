@@ -1,128 +1,79 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {
-  COMPLIANCE_DECLARATIONS,
-  INITIAL_CHATS,
-  INITIAL_NEARBY_PEERS,
-  INITIAL_REQUESTS,
-  INITIAL_TRANSFERS,
-  MESSENGER_STORE_LISTING,
+  CHANGELOG_HIGHLIGHTS,
+  HERO_CONTENT,
+  IDEAL_FOR_PROFILES,
+  KEY_FEATURES,
+  OPTIONAL_ADS_DISCLOSURE,
   PERMISSIONS_TABLE,
-  STORE_LISTING_VARIANTS,
+  SECURITY_PROTECTIONS,
 } from '../data/storeContent';
-import {
-  acceptPeerRequest,
-  buildPrivacyPolicyMarkdown,
-  filterChats,
-  isValidEmail,
-  rejectAndBlockPeerRequest,
-  resolveInitialView,
-  sendChatMessage,
-  SimulatorState,
-  toggleTransferPause,
-  validateStoreListingLimits,
-} from './meshlyLogic';
+import { buildPrivacyPolicyMarkdown, isValidEmail, resolveInitialView } from './meshlyLogic';
 
-test('Messenger Edition is the sole store listing and satisfies strict 30 / 80 / 4000 character limits', () => {
-  assert.equal(STORE_LISTING_VARIANTS.length, 1);
-  assert.equal(STORE_LISTING_VARIANTS[0].appName, 'Meshly: Local Wi-Fi Messenger');
+test('Hero, Key Features, and Ideal For match the updated Meshly public website overview', () => {
+  assert.equal(HERO_CONTENT.headline, 'Meshly — Your People. Your Network. No Internet Required.');
+  assert.equal(KEY_FEATURES.length, 4);
+  assert.equal(IDEAL_FOR_PROFILES.length, 3);
 
-  const res = validateStoreListingLimits(MESSENGER_STORE_LISTING);
-  assert.equal(res.appNameValid, true);
-  assert.equal(res.shortDescValid, true);
-  assert.equal(res.fullDescValid, true);
-  assert.equal(res.allValid, true);
+  const featureText = KEY_FEATURES.map(
+    (f) => `${f.title} ${f.bullets.map((b) => `${b.label || ''} ${b.text}`).join(' ')}`
+  ).join(' ');
+
+  assert.match(featureText, /Wi-Fi Direct/i);
+  assert.match(featureText, /48 kHz HD voice/i);
+  assert.match(featureText, /Picture-in-Picture/i);
+  assert.match(featureText, /Silent Call Waiting/i);
+  assert.match(featureText, /Storage Access Framework/i);
+  assert.match(featureText, /Encrypted Local Backups/i);
+  assert.match(featureText, /deduplication/i);
 });
 
-test('Play Console declarations reflect Free with No In-App Purchases, May Contain Ads, and Background Battery permission', () => {
-  const pricing = COMPLIANCE_DECLARATIONS.find((d) => d.label === 'Pricing & Monetization');
-  const ads = COMPLIANCE_DECLARATIONS.find((d) => d.label === 'Contains Ads Declaration');
-  const iarcGoods = COMPLIANCE_DECLARATIONS.find((d) => d.label === 'Digital Goods Purchases (IARC)');
+test('Security overview and permissions include E2EE, Hidden Google ID, Zero Broad Storage, Background Battery, and Rewarded Ads', () => {
+  const securityText = SECURITY_PROTECTIONS.map(
+    (s) => `${s.title} ${s.meta} ${s.points.map((p) => p.text).join(' ')}`
+  ).join(' ');
 
-  assert.ok(pricing?.value.includes('No In-App Purchases'));
-  assert.ok(ads?.value.includes('Yes, may contain ads'));
-  assert.ok(iarcGoods?.value.startsWith('No'));
+  assert.match(securityText, /secp256r1/);
+  assert.match(securityText, /AES-256-GCM/);
+  assert.match(securityText, /HKDF-SHA256/);
+  assert.match(securityText, /Safety Numbers/);
+  assert.match(securityText, /Verified Private ID/);
 
-  const batteryPerm = PERMISSIONS_TABLE.find((p) => p.permission === 'BACKGROUND BATTERY');
-  assert.ok(batteryPerm);
-  assert.equal(batteryPerm.manifestId, 'android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS');
+  const permText = PERMISSIONS_TABLE.map((p) => `${p.permission} ${p.manifestId} ${p.purpose}`).join(' ');
+  assert.match(permText, /neverForLocation/);
+  assert.match(permText, /Android 10–12/);
+  assert.match(permText, /Photo Picker/);
+  assert.match(permText, /REQUEST_IGNORE_BATTERY_OPTIMIZATIONS/);
 
-  const hasBilling = PERMISSIONS_TABLE.some((p) => p.manifestId.includes('BILLING'));
-  assert.equal(hasBilling, false);
+  const adsText = OPTIONAL_ADS_DISCLOSURE.points.join(' ');
+  assert.match(adsText, /rewarded ads/i);
+  assert.match(adsText, /AdMob never has access/i);
 });
 
-test('filterChats filters by name, email, local IP, or message content', () => {
-  assert.equal(filterChats(INITIAL_CHATS, '').length, 5);
-  assert.equal(filterChats(INITIAL_CHATS, 'Maya').length, 1);
-  assert.equal(filterChats(INITIAL_CHATS, '10.0.2.24')[0].name, "Liam O'Connor");
-  assert.equal(filterChats(INITIAL_CHATS, 'hotspot')[0].name, 'Priya Nair');
-  assert.equal(filterChats(INITIAL_CHATS, 'nonexistent-peer-xyz').length, 0);
-});
-
-test('sendChatMessage rejects empty input and appends trimmed valid messages', () => {
-  const emptyAttempt = sendChatMessage(INITIAL_CHATS, 'chat-maya', '   ', '12:55 PM');
-  assert.equal(emptyAttempt.sent, false);
-  assert.ok(emptyAttempt.error);
-  assert.equal(emptyAttempt.chats[0].messages.length, INITIAL_CHATS[0].messages.length);
-
-  const validAttempt = sendChatMessage(INITIAL_CHATS, 'chat-maya', '  Meet on Deck 9 Wi-Fi  ', '12:56 PM');
-  assert.equal(validAttempt.sent, true);
-  const maya = validAttempt.chats.find((c) => c.id === 'chat-maya')!;
-  assert.equal(maya.lastMessage, 'Meet on Deck 9 Wi-Fi');
-  assert.equal(maya.lastTimestamp, '12:56 PM');
-  assert.equal(maya.messages.at(-1)?.text, 'Meet on Deck 9 Wi-Fi');
-});
-
-test('acceptPeerRequest and rejectAndBlockPeerRequest update simulator state cleanly', () => {
-  const initialState: SimulatorState = {
-    chats: INITIAL_CHATS,
-    pendingRequests: INITIAL_REQUESTS,
-    nearbyPeers: INITIAL_NEARBY_PEERS,
-    transfers: INITIAL_TRANSFERS,
-    blockedGoogleIds: [],
-  };
-
-  const accepted = acceptPeerRequest(initialState, 'req-noah');
-  assert.equal(accepted.chats.length, INITIAL_CHATS.length + 1);
-  assert.equal(accepted.chats[0].name, 'Noah Patel');
-  assert.equal(accepted.pendingRequests.length, INITIAL_REQUESTS.length - 1);
-
-  const rejected = rejectAndBlockPeerRequest(accepted, 'req-hannah');
-  assert.equal(rejected.pendingRequests.length, 0);
-  assert.deepEqual(rejected.blockedGoogleIds, ['hannah.kim@gmail.com']);
-});
-
-test('toggleTransferPause pauses and resumes active transfers while preserving SHA-256 verified files', () => {
-  const paused = toggleTransferPause(INITIAL_TRANSFERS, 'tx-1');
-  assert.equal(paused[0].status, 'paused');
-  assert.equal(paused[0].speedLabel, 'Paused');
-
-  const resumed = toggleTransferPause(paused, 'tx-1');
-  assert.equal(resumed[0].status, 'transferring');
-
-  const verifiedUnchanged = toggleTransferPause(INITIAL_TRANSFERS, 'tx-2');
-  assert.equal(verifiedUnchanged[1].status, 'verified');
-});
-
-test('buildPrivacyPolicyMarkdown includes Background Battery permission, Advertising, and zero IAP/Billing references', () => {
+test('buildPrivacyPolicyMarkdown merges all new privacy disclosures and retains Background Battery across both templates', () => {
   assert.equal(isValidEmail('uzairnaeem15@gmail.com'), true);
+  assert.equal(isValidEmail('not-an-email'), false);
 
-  const detailed = buildPrivacyPolicyMarkdown('detailed', 'uzairnaeem15@gmail.com');
-  assert.ok(detailed.includes('**Effective Date:** November 6, 2026'));
-  assert.ok(detailed.includes('REQUEST_IGNORE_BATTERY_OPTIMIZATIONS'));
-  assert.ok(detailed.includes('Advertising ID'));
-  assert.equal(detailed.includes('com.android.vending.BILLING'), false);
-  assert.equal(detailed.includes('Google Play Billing'), false);
-
-  const concise = buildPrivacyPolicyMarkdown('concise', 'uzairnaeem15@gmail.com');
-  assert.ok(concise.includes('REQUEST_IGNORE_BATTERY_OPTIMIZATIONS'));
-  assert.ok(concise.includes('Advertising ID'));
-  assert.equal(concise.includes('com.android.vending.BILLING'), false);
+  for (const mode of ['detailed', 'concise'] as const) {
+    const md = buildPrivacyPolicyMarkdown(mode, 'uzairnaeem15@gmail.com');
+    assert.ok(md.includes('**Effective Date:** November 6, 2026'));
+    assert.ok(md.includes('secp256r1'));
+    assert.ok(md.includes('AES-256-GCM'));
+    assert.ok(md.includes('Verified Private ID'));
+    assert.ok(md.includes('REQUEST_IGNORE_BATTERY_OPTIMIZATIONS'));
+    assert.ok(md.includes('Photo Picker'));
+    assert.ok(md.includes('rewarded ads'));
+    assert.equal(md.includes('com.android.vending.BILLING'), false);
+    assert.equal(md.includes('Google Play Billing'), false);
+  }
 });
 
-test('resolveInitialView supports #changelog, #permissions, #privacy, and ?page=privacy deep-links', () => {
+test('resolveInitialView supports all public sections and standalone ?page=privacy mode', () => {
+  assert.deepEqual(resolveInitialView('#features', ''), { mode: 'all', scrollTargetId: 'features' });
+  assert.deepEqual(resolveInitialView('#ideal-for', ''), { mode: 'all', scrollTargetId: 'ideal-for' });
+  assert.deepEqual(resolveInitialView('#security', ''), { mode: 'all', scrollTargetId: 'security' });
   assert.deepEqual(resolveInitialView('#changelog', ''), { mode: 'all', scrollTargetId: 'changelog' });
-  assert.deepEqual(resolveInitialView('#permissions', ''), { mode: 'all', scrollTargetId: 'permissions' });
   assert.deepEqual(resolveInitialView('#privacy', ''), { mode: 'all', scrollTargetId: 'privacy' });
   assert.deepEqual(resolveInitialView('', '?page=privacy'), {
     mode: 'privacy-focused',
@@ -130,18 +81,19 @@ test('resolveInitialView supports #changelog, #permissions, #privacy, and ?page=
   });
 });
 
-test('UI components hide app-ads.txt setup and exclude Copy/Update buttons while static files remain for crawlers', async () => {
+test('Play Console kit and Phone Simulator are retired while Changelog, GitHub Pages bundle, and app-ads.txt stay intact', async () => {
   const fs = await import('node:fs');
   const path = await import('node:path');
 
-  const playConsoleSrc = fs.readFileSync(path.resolve('src/components/PlayConsoleHub.tsx'), 'utf8');
-  const privacySrc = fs.readFileSync(path.resolve('src/components/PrivacyPolicySection.tsx'), 'utf8');
+  assert.equal(fs.existsSync(path.resolve('src/components/PhoneSimulator.tsx')), false);
+  assert.equal(fs.existsSync(path.resolve('src/components/PlayConsoleHub.tsx')), false);
+  assert.equal(fs.existsSync(path.resolve('src/components/SecurityOverviewSection.tsx')), true);
+  assert.equal(fs.existsSync(path.resolve('src/components/ChangelogSection.tsx')), true);
 
-  assert.equal(playConsoleSrc.includes('AdMob app-ads.txt Setup'), false);
-  assert.equal(playConsoleSrc.includes('Local Chat Edition'), false);
-  assert.equal(playConsoleSrc.includes('>Copy<'), false);
-  assert.equal(privacySrc.includes('Copy Raw Markdown'), false);
-  assert.equal(privacySrc.includes('>Update<'), false);
+  const combinedChangelog = CHANGELOG_HIGHLIGHTS.map((c) => `${c.title} ${c.description}`).join(' ');
+  assert.match(combinedChangelog, /Bluetooth/i);
+  assert.match(combinedChangelog, /Wi-Fi Direct/i);
+  assert.match(combinedChangelog, /Background Battery/i);
 
   assert.equal(fs.existsSync(path.resolve('public/app-ads.txt')), true);
   assert.equal(
@@ -150,11 +102,4 @@ test('UI components hide app-ads.txt setup and exclude Copy/Update buttons while
   );
   assert.equal(fs.existsSync(path.resolve('docs/index.html')), true);
   assert.equal(fs.existsSync(path.resolve('docs/assets/meshly.js')), true);
-
-  const { CHANGELOG_HIGHLIGHTS } = await import('../data/storeContent');
-  const combinedChangelog = CHANGELOG_HIGHLIGHTS.map((c) => `${c.title} ${c.description}`).join(' ');
-  assert.match(combinedChangelog, /Bluetooth/i);
-  assert.match(combinedChangelog, /Wi-Fi Direct/i);
-  assert.match(combinedChangelog, /Background Battery/i);
-  assert.match(combinedChangelog, /General/i);
 });

@@ -1,179 +1,4 @@
-import {
-  ChatMessage,
-  ChatThread,
-  FileTransferItem,
-  NearbyPeer,
-  PeerRequest,
-  StoreListingVariant,
-} from '../data/storeContent';
-
-export interface SimulatorState {
-  chats: ChatThread[];
-  pendingRequests: PeerRequest[];
-  nearbyPeers: NearbyPeer[];
-  transfers: FileTransferItem[];
-  blockedGoogleIds: string[];
-}
-
-export interface ListingValidationResult {
-  appNameLength: number;
-  appNameMax: 30;
-  appNameValid: boolean;
-  shortDescLength: number;
-  shortDescMax: 80;
-  shortDescValid: boolean;
-  fullDescLength: number;
-  fullDescMax: 4000;
-  fullDescValid: boolean;
-  allValid: boolean;
-}
-
-export function filterChats(chats: ChatThread[], query: string): ChatThread[] {
-  const normalized = query.trim().toLowerCase();
-  if (!normalized) return chats;
-  return chats.filter(
-    (chat) =>
-      chat.name.toLowerCase().includes(normalized) ||
-      chat.email.toLowerCase().includes(normalized) ||
-      chat.localIp.toLowerCase().includes(normalized) ||
-      chat.lastMessage.toLowerCase().includes(normalized) ||
-      chat.messages.some(
-        (m) =>
-          m.text.toLowerCase().includes(normalized) ||
-          (m.attachment && m.attachment.name.toLowerCase().includes(normalized))
-      )
-  );
-}
-
-export function markChatAsRead(chats: ChatThread[], chatId: string): ChatThread[] {
-  return chats.map((chat) => (chat.id === chatId ? { ...chat, unreadCount: 0 } : chat));
-}
-
-export function sendChatMessage(
-  chats: ChatThread[],
-  chatId: string,
-  rawText: string,
-  timeLabel: string
-): { chats: ChatThread[]; sent: boolean; error?: string } {
-  const trimmed = rawText.trim();
-  if (!trimmed) {
-    return { chats, sent: false, error: 'Enter a message to send over local Wi-Fi.' };
-  }
-
-  const newMessage: ChatMessage = {
-    id: `msg-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
-    sender: 'me',
-    text: trimmed,
-    time: timeLabel,
-    dateGroup: 'TODAY',
-    status: 'read',
-  };
-
-  const updated = chats.map((chat) => {
-    if (chat.id !== chatId) return chat;
-    return {
-      ...chat,
-      unreadCount: 0,
-      typing: false,
-      lastMessage: trimmed,
-      lastTimestamp: timeLabel,
-      messages: [...chat.messages, newMessage],
-    };
-  });
-
-  return { chats: updated, sent: true };
-}
-
-export function acceptPeerRequest(state: SimulatorState, requestId: string): SimulatorState {
-  const target = state.pendingRequests.find((r) => r.id === requestId);
-  if (!target) return state;
-
-  const newChat: ChatThread = {
-    id: `chat-${target.id}`,
-    name: target.name,
-    initials: target.initials,
-    avatarTone: 'bg-[#17493D] text-[#6EE7B7]',
-    email: target.email,
-    localIp: target.localIp,
-    verifiedGmail: true,
-    online: true,
-    unreadCount: 0,
-    lastMessage: target.note,
-    lastTimestamp: 'Just now',
-    messages: [
-      {
-        id: `init-${target.id}`,
-        sender: 'them',
-        text: target.note,
-        time: 'Just now',
-        dateGroup: 'TODAY',
-      },
-    ],
-  };
-
-  return {
-    ...state,
-    chats: [newChat, ...state.chats],
-    pendingRequests: state.pendingRequests.filter((r) => r.id !== requestId),
-  };
-}
-
-export function rejectAndBlockPeerRequest(state: SimulatorState, requestId: string): SimulatorState {
-  const target = state.pendingRequests.find((r) => r.id === requestId);
-  if (!target) return state;
-
-  const nextBlocked = state.blockedGoogleIds.includes(target.email)
-    ? state.blockedGoogleIds
-    : [...state.blockedGoogleIds, target.email];
-
-  return {
-    ...state,
-    pendingRequests: state.pendingRequests.filter((r) => r.id !== requestId),
-    blockedGoogleIds: nextBlocked,
-  };
-}
-
-export function sendDiscoveryRequest(peers: NearbyPeer[], peerId: string): NearbyPeer[] {
-  return peers.map((peer) => (peer.id === peerId ? { ...peer, requestSent: true } : peer));
-}
-
-export function toggleTransferPause(
-  transfers: FileTransferItem[],
-  transferId: string
-): FileTransferItem[] {
-  return transfers.map((tx) => {
-    if (tx.id !== transferId || tx.status === 'verified') return tx;
-    const nextStatus = tx.status === 'transferring' ? 'paused' : 'transferring';
-    return {
-      ...tx,
-      status: nextStatus,
-      speedLabel: nextStatus === 'paused' ? 'Paused' : '38.4 MB/s',
-    };
-  });
-}
-
-export function validateStoreListingLimits(listing: StoreListingVariant): ListingValidationResult {
-  const appNameLength = listing.appName.length;
-  const shortDescLength = listing.shortDescription.length;
-  const fullDescLength = listing.fullDescription.length;
-
-  const appNameValid = appNameLength > 0 && appNameLength <= 30;
-  const shortDescValid = shortDescLength > 0 && shortDescLength <= 80;
-  const fullDescValid = fullDescLength > 0 && fullDescLength <= 4000;
-
-  return {
-    appNameLength,
-    appNameMax: 30,
-    appNameValid,
-    shortDescLength,
-    shortDescMax: 80,
-    shortDescValid,
-    fullDescLength,
-    fullDescMax: 4000,
-    fullDescValid,
-    allValid: appNameValid && shortDescValid && fullDescValid,
-  };
-}
+export type ActiveRouteView = 'all' | 'privacy-focused';
 
 export function isValidEmail(email: string): boolean {
   const trimmed = email.trim();
@@ -192,27 +17,28 @@ export function buildPrivacyPolicyMarkdown(
 
 **Effective Date:** November 6, 2026
 
-Meshly ("the App") is a local peer-to-peer communication application for Android. We are committed to protecting your privacy.
+Meshly ("the App") is a local-first, zero-server peer-to-peer messenger for Android. Your messages, voice/video calls, contacts, and files travel directly between your devices—never through Meshly cloud servers.
 
-## 1. Local Peer-to-Peer Communication (No Developer Chat Servers)
-Meshly operates directly between devices on your local Wi-Fi network or mobile hotspot. We do not operate central messaging servers, and we do not collect, upload, store, or sell your personal messages, call logs, or shared files on developer servers.
+## 1. No Central Messaging Servers
+Meshly does not operate cloud servers to relay, store, or index your chats, calls, or contacts. All communication happens directly peer-to-peer over your local Wi-Fi network or Wi-Fi Direct.
 
-## 2. Information Stored Locally on Your Device
-- **Profile Information:** Your chosen display name, optional Google email identifier, and profile photo are stored locally on your device and shared only with peers on your local network to identify you during discovery and chat requests.
-- **Messages, Files, and Call Logs:** All chat history, shared photos/videos/files, and call logs are stored locally on your device. You can delete individual messages, clear chats, clear call history, or wipe all local data at any time in **Settings > Data & Reset**.
+## 2. End-to-End Encryption & Protected Account Identity
+- **End-to-End Encryption by Default:** Every device generates an elliptic-curve cryptographic identity (ECDH / ECDSA secp256r1). Direct peer sessions derive unique AES-256-GCM encryption keys via ECDH + HKDF-SHA256, with cryptographic Safety Numbers and QR code pairing to verify contacts.
+- **Protected Account Identity (Hidden by Default):** Your Google ID is stored and exchanged using encrypted identity tokens to recognize contacts reliably without duplicates. Other users cannot view your Google ID unless you explicitly enable visibility in Settings; when hidden, peers see a Verified Private ID badge instead.
+- **Encrypted, User-Owned Backups:** Backups of your contacts, chats, and media are saved only to a folder you select via Android’s Storage Access Framework and are encrypted so only Meshly on your verified account can restore them.
 
-## 3. Third-Party Advertising
-- **Advertisements:** Meshly is free with no in-app purchases and may display ads served by third-party advertising partners (such as Google AdMob) when internet connectivity is available. Ad SDKs may process device identifiers (such as the Android Advertising ID), coarse network information, and ad interaction diagnostics to serve and measure ads. You can reset or delete your Advertising ID anytime in your Android device’s **Settings > Privacy > Ads**.
+## 3. Minimal, Transparent Device Permissions
+- **Local Wi-Fi & Nearby Devices (\`NEARBY_WIFI_DEVICES\` with \`neverForLocation\` on Android 13+):** Used solely to discover and connect to peers on your local network or Wi-Fi Direct. Android 10–12 requires system location permission solely for OS-level Wi-Fi Direct scanning; Meshly never tracks, stores, or transmits your GPS location.
+- **Camera & Microphone (\`CAMERA\`, \`RECORD_AUDIO\`):** Used only when you actively scan a QR code, capture media, or place/answer a voice or video call.
+- **Zero Broad Storage Access:** Meshly uses the Android Photo Picker and Storage Access Framework (SAF) and never requests blanket access to your photo gallery or filesystem.
+- **Notifications (\`POST_NOTIFICATIONS\`):** Used locally to alert you to incoming messages and calls.
+- **Background Battery Optimization (\`REQUEST_IGNORE_BATTERY_OPTIMIZATIONS\`):** Allows Meshly to remain reachable on your local Wi-Fi or Wi-Fi Direct network in the background without Android Doze suspending discovery, messages, file transfers, or calls.
 
-## 4. Permissions Used
-- **Camera (\`android.permission.CAMERA\`):** Used only when you scan a QR code, capture a photo in chat, or participate in a video call.
-- **Microphone (\`android.permission.RECORD_AUDIO\`):** Used only during active voice or video calls.
-- **Nearby Wi-Fi Devices (\`android.permission.NEARBY_WIFI_DEVICES\`):** Used to discover other Meshly users on your local network without determining your physical location.
-- **Notifications (\`android.permission.POST_NOTIFICATIONS\`):** Used to notify you of incoming messages and calls.
-- **Background Battery Optimization (\`android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS\`):** Allows Meshly to stay reachable on your local Wi-Fi or hotspot in the background without Android Doze suspending local peer discovery, incoming messages, file transfers, or calls.
+## 4. Optional Ads Disclosure (When Online)
+Meshly works 100% offline with zero internet required for messaging, calling, and file sharing, and contains no in-app purchases. Meshly includes the Google Mobile Ads (AdMob) SDK for optional, user-initiated rewarded ads when an internet connection is available. When you interact with optional ad features while online, Google Mobile Ads may collect standard advertising identifiers and device diagnostics according to Google’s Privacy Policy. AdMob never has access to your Meshly messages, calls, contacts, encryption keys, or local files.
 
 ## 5. Data Deletion
-Because your conversations and files reside on your device, you have full control over them. You can erase all stored local data at any time from **Settings > Data & Reset > Wipe All Local Data** or by uninstalling the App.
+All chats, call logs, backups, and media reside on your device. You can delete messages, remove backups, or wipe all local data at any time in **Settings** or by uninstalling the App.
 
 ## 6. Contact Us
 If you have questions about this Privacy Policy, please contact us at: ${safeEmail}`;
@@ -222,72 +48,40 @@ If you have questions about this Privacy Policy, please contact us at: ${safeEma
 
 **Effective Date:** November 6, 2026
 
-Meshly ("the App") is a local peer-to-peer communication application for Android. We respect your privacy and designed Meshly so that your conversations, files, and calls remain under your control on your local network.
+Meshly ("the App") is built from the ground up as a local-first, zero-server communication application for Android. Your messages, voice and video calls, contacts, and files travel directly between your devices—never through Meshly cloud servers.
 
-## 1. No Developer Cloud Servers for Conversations or Files
-Meshly does not use external developer servers or cloud databases to route or store your communications. We do not collect, store, sell, or transmit your personal messages, voice/video calls, call logs, or transferred files to any developer-operated server.
+## 1. No Central Messaging Servers
+Meshly does not operate central cloud servers to relay, store, or index your chats, voice/video calls, call logs, contacts, or shared files. All communication happens directly peer-to-peer over your local Wi-Fi network (including multi-subnet networks) or peer-to-peer Wi-Fi Direct.
 
-## 2. Information Stored Locally on Your Device
-All communication data generated or configured in Meshly is stored locally on your Android device:
-- **Profile Identity:** Your chosen display name (first and last name), email identifier, profile photo, and locally generated cryptographic device keys.
-- **Messages, Call Logs & Files:** Chat history, call history, and transferred media/files are stored exclusively in your device's internal storage or the local folder you select via the Android Storage Access Framework.
+## 2. End-to-End Encryption by Default
+- **Cryptographic Device Identity:** Every device generates its own elliptic-curve cryptographic identity (\`ECDH\` / \`ECDSA secp256r1\`).
+- **Session Encryption & Verification:** Direct peer sessions derive unique \`AES-256-GCM\` encryption keys via \`ECDH + HKDF-SHA256\`, paired with cryptographic Safety Numbers and QR code verification so you can verify contacts and prevent man-in-the-middle attacks.
 
-## 3. Local Network Peer-to-Peer Communication
-When you connect to a local Wi-Fi network or mobile hotspot while using Meshly, your device broadcasts your configured display name, email identifier, and cryptographic public key to other Meshly users on the same local network so they can discover you, verify your identity, and exchange messages, files, and voice/video calls directly device-to-device.
+## 3. Protected Account Identity (Hidden by Default)
+Your Google ID is stored and exchanged using encrypted identity tokens so Meshly can reliably recognize your contacts without duplicating them across networks.
+- **Hidden by Default:** Other users cannot view your Google ID in your profile unless you explicitly turn on visibility in Settings. When hidden, peers see a **Verified Private ID** badge instead.
 
-## 4. Third-Party Advertising
-- **Advertisements (May Contain Ads):** Meshly is free to use with no in-app purchases and may display advertisements provided by third-party ad networks (such as Google AdMob) when your device has internet access. These third-party SDKs may collect and process your Android Advertising ID, device/app diagnostics, and ad interaction metrics in accordance with Google’s Privacy & Terms. You may opt out of personalized ads or delete your Advertising ID at any time in **Android Settings -> Privacy -> Ads**.
+## 4. Encrypted, User-Owned Local Backups & On-Device Storage
+All chat history, call logs, and transferred media stay exclusively on your device or in the folder you explicitly select via the Android Storage Access Framework (SAF).
+- **Encrypted Backups:** Local backups of your contacts, chat history, and media are encrypted and bound to your account identity so only Meshly signed into your matching verified account can read or restore them (with automatic deduplication when merging restored contacts and live peers). You remain in complete control of where your backups live and can delete them at any time.
 
-## 5. Permissions Used
-- **Camera (\`android.permission.CAMERA\`):** Used only when you scan a peer's QR code or participate in a local video call.
-- **Microphone (\`android.permission.RECORD_AUDIO\`):** Used only during active local voice or video calls.
-- **Nearby Wi-Fi Devices & Network (\`android.permission.NEARBY_WIFI_DEVICES\`, \`INTERNET\`, \`ACCESS_WIFI_STATE\`):** Used to discover and communicate with nearby devices on your local Wi-Fi or hotspot network, and when online to load advertisements.
-- **Notifications (\`android.permission.POST_NOTIFICATIONS\`):** Used to display alerts for incoming local messages and calls.
-- **Background Battery Optimization (\`android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS\`):** Allows Meshly to maintain reliable local LAN connectivity in the background so incoming messages, file transfers, and voice/video calls are not interrupted by Android Doze mode.
+## 5. Minimal, Transparent Device Permissions
+- **Local Wi-Fi & Nearby Devices (\`android.permission.NEARBY_WIFI_DEVICES\`):** Used solely to discover and connect to peers on your local network or Wi-Fi Direct. \`NEARBY_WIFI_DEVICES\` is declared with \`neverForLocation\` on Android 13+; Android 10–12 requires system location permission solely for OS-level Wi-Fi Direct scanning, and Meshly never tracks, stores, or transmits your GPS location.
+- **Camera & Microphone (\`android.permission.CAMERA\`, \`android.permission.RECORD_AUDIO\`):** Used only when you actively scan a QR code, capture media, or place/answer a voice or video call.
+- **Zero Broad Storage Access:** Meshly uses the Android Photo Picker and Storage Access Framework (SAF), meaning it never requests blanket access to your entire photo gallery or filesystem.
+- **Notifications (\`android.permission.POST_NOTIFICATIONS\`):** Used locally to alert you to incoming messages and calls.
+- **Background Battery Optimization (\`android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS\`):** Allows Meshly to stay reachable on your local Wi-Fi or Wi-Fi Direct network in the background without Android Doze interrupting peer discovery, incoming messages, file transfers, or voice/video calls.
 
-## 6. Data Deletion
-You can delete individual messages, clear call logs, manage blocked users, rotate your cryptographic keys, or wipe all local app data at any time from **Settings -> Storage & Data -> Wipe All Local App Data**, or by uninstalling the App.
+## 6. Optional Ads Disclosure (When Online)
+Meshly works 100% offline with zero internet required for messaging, calling, and file sharing, and does not include in-app purchases.
+- **Optional Rewarded Ads:** Meshly includes the Google Mobile Ads (AdMob) SDK for optional, user-initiated rewarded ads when an internet connection is available. When your device is online and you interact with optional ad features, Google Mobile Ads may collect standard advertising identifiers and device diagnostics according to Google’s Privacy Policy. AdMob never has access to your Meshly messages, calls, contacts, encryption keys, or local files. You can reset or delete your Android Advertising ID at any time in **Android Settings -> Privacy -> Ads**.
 
-## 7. Contact Us
+## 7. Data Deletion
+You can delete individual messages, clear call logs, manage blocked users, delete local backup files, rotate your cryptographic keys, or wipe all local app data at any time from **Settings -> Storage & Data -> Wipe All Local App Data**, or by uninstalling the App.
+
+## 8. Contact Us
 If you have questions about this Privacy Policy, please contact us at: ${safeEmail}`;
 }
-
-export const GOOGLE_TAG_AUTHORITY_ID = 'f08c47fec0942fa0';
-
-export function parseAdMobPublisherId(rawInput: string): {
-  valid: boolean;
-  normalizedPubId?: string;
-  error?: string;
-} {
-  const trimmed = rawInput.trim();
-  if (!trimmed) {
-    return {
-      valid: false,
-      error: 'Enter your 16-digit AdMob Publisher ID (for example, pub-3940256099942544).',
-    };
-  }
-
-  // Accept either a full snippet line ("google.com, pub-1234..., DIRECT, f08c47fec0942fa0") or "pub-1234..." or "1234..."
-  const fullLineMatch = trimmed.match(/pub-(\d{16})/i);
-  if (fullLineMatch) {
-    return { valid: true, normalizedPubId: `pub-${fullLineMatch[1]}` };
-  }
-
-  if (/^\d{16}$/.test(trimmed)) {
-    return { valid: true, normalizedPubId: `pub-${trimmed}` };
-  }
-
-  return {
-    valid: false,
-    error: 'Publisher ID must be "pub-" followed by 16 digits (from AdMob → Apps → View all apps → app-ads.txt).',
-  };
-}
-
-export function buildAppAdsTxt(normalizedPubId: string): string {
-  return `google.com, ${normalizedPubId}, DIRECT, ${GOOGLE_TAG_AUTHORITY_ID}`;
-}
-
-export type ActiveRouteView = 'all' | 'privacy-focused';
 
 export function resolveInitialView(hash: string, search: string): {
   mode: ActiveRouteView;
@@ -302,17 +96,16 @@ export function resolveInitialView(hash: string, search: string): {
   }
 
   if (
-    cleanHash === 'privacy' ||
-    cleanHash === 'play-console' ||
-    cleanHash === 'changelog' ||
-    cleanHash === 'permissions' ||
-    cleanHash === 'screenshots' ||
     cleanHash === 'features' ||
-    cleanHash === 'simulator'
+    cleanHash === 'ideal-for' ||
+    cleanHash === 'screenshots' ||
+    cleanHash === 'security' ||
+    cleanHash === 'permissions' ||
+    cleanHash === 'changelog' ||
+    cleanHash === 'privacy'
   ) {
     return { mode: 'all', scrollTargetId: cleanHash };
   }
 
   return { mode: 'all', scrollTargetId: null };
 }
-

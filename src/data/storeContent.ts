@@ -1,490 +1,297 @@
-export interface ChatMessage {
+export interface FeaturePillar {
+  index: string;
+  title: string;
+  headline: string;
+  bullets: Array<{
+    label?: string;
+    text: string;
+  }>;
+  footerMeta: string;
+  spanWide?: boolean;
+}
+
+export interface IdealForProfile {
+  index: string;
+  audience: string;
+  description: string;
+}
+
+export interface SecurityProtectionItem {
+  index: string;
+  title: string;
+  meta: string;
+  points: Array<{
+    label?: string;
+    text: string;
+  }>;
+}
+
+export interface PermissionItem {
+  permission: string;
+  manifestId: string;
+  purpose: string;
+}
+
+export interface AppScreenshot {
   id: string;
-  sender: 'me' | 'them';
-  text: string;
-  time: string;
-  dateGroup: string;
-  replyTo?: string;
-  status?: 'sent' | 'delivered' | 'read';
-  attachment?: {
-    name: string;
-    size: string;
-    sha256Short: string;
-    kind: 'document' | 'video' | 'photo';
-  };
+  title: string;
+  caption: string;
+  assetSubpath: string;
+  meta: string;
 }
 
-export interface ChatThread {
-  id: string;
-  name: string;
-  initials: string;
-  avatarTone: string;
-  email: string;
-  localIp: string;
-  verifiedGmail: boolean;
-  online: boolean;
-  typing?: boolean;
-  unreadCount: number;
-  lastMessage: string;
-  lastTimestamp: string;
-  messages: ChatMessage[];
+export interface ChangelogHighlight {
+  tag: string;
+  title: string;
+  description: string;
 }
 
-export interface PeerRequest {
-  id: string;
-  name: string;
-  initials: string;
-  email: string;
-  localIp: string;
-  discoveryMethod: 'mDNS (_meshly._tcp)' | 'QR Code Pairing';
-  note: string;
-  timestamp: string;
+export interface EngineeringFix {
+  index: string;
+  title: string;
+  rootCause: string;
+  resolution: string;
 }
 
-export interface NearbyPeer {
-  id: string;
-  name: string;
-  initials: string;
-  email: string;
-  localIp: string;
-  signalLabel: string;
-  requestSent: boolean;
-}
+export const HERO_CONTENT = {
+  kicker: 'Local-First Android Messenger · End-to-End Encrypted · Zero Cloud Servers',
+  headline: 'Meshly — Your People. Your Network. No Internet Required.',
+  subheadline:
+    'Private, end-to-end encrypted messaging, HD voice and video calling, and fast local file sharing that work directly over your local Wi-Fi network or peer-to-peer Wi-Fi Direct—with no cloud servers, no phone numbers, and no internet connection required.',
+  whatMeshlyDoesTitle: 'What Meshly Does',
+  whatMeshlyDoesBody:
+    'Meshly turns any shared Wi-Fi network—or nearby Android devices via Wi-Fi Direct—into a private, high-speed communication network. Whether you are at home, in an office, on a campus, traveling on a cruise or flight, or working in an area without cellular coverage, Meshly keeps your conversations, calls, and files flowing directly from device to device.',
+  metrics: [
+    {
+      value: '0 Cloud Servers',
+      label: 'Direct peer-to-peer over local Wi-Fi LAN and Wi-Fi Direct',
+    },
+    {
+      value: 'AES-256-GCM',
+      label: 'ECDH / ECDSA secp256r1 + HKDF-SHA256 encryption by default',
+    },
+    {
+      value: '48 kHz HD',
+      label: 'Hardware-accelerated voice & video with Picture-in-Picture',
+    },
+    {
+      value: '100% User-Owned',
+      label: 'Encrypted local backups & Storage Access Framework folders',
+    },
+  ],
+};
 
-export interface CallRecord {
-  id: string;
-  name: string;
-  initials: string;
-  localIp: string;
-  mode: 'video' | 'voice';
-  direction: 'incoming' | 'outgoing';
-  timestamp: string;
-  duration: string;
-  latencyMs: number;
-}
-
-export interface FileTransferItem {
-  id: string;
-  fileName: string;
-  peerName: string;
-  direction: 'receiving' | 'sent' | 'received';
-  sizeLabel: string;
-  speedLabel: string;
-  progress: number;
-  status: 'transferring' | 'paused' | 'verified';
-  sha256: string;
-}
-
-export interface StoreListingVariant {
-  id: 'variant-a' | 'variant-b';
-  label: string;
-  appName: string;
-  shortDescription: string;
-  fullDescription: string;
-  category: string;
-  tags: string[];
-  reviewerInstructions: string;
-  dataSafetySummary: string;
-  dataSafetyNote: string;
-}
-
-export const INITIAL_CHATS: ChatThread[] = [
+export const KEY_FEATURES: FeaturePillar[] = [
   {
-    id: 'chat-maya',
-    name: 'Maya Lin',
-    initials: 'ML',
-    avatarTone: 'bg-[#17493D] text-[#6EE7B7]',
-    email: 'maya.lin@gmail.com',
-    localIp: '10.0.2.18',
-    verifiedGmail: true,
-    online: true,
-    unreadCount: 0,
-    lastMessage: 'Got it in 2 seconds at full quality! Calling you from Observation Lounge in five.',
-    lastTimestamp: '12:49 PM',
-    messages: [
+    index: '01',
+    title: 'Offline Local Wi-Fi & Wi-Fi Direct Messaging',
+    headline: 'Discover nearby devices across multi-subnet Wi-Fi or direct peer links',
+    spanWide: true,
+    bullets: [
       {
-        id: 'm1',
-        sender: 'them',
-        text: 'Hey Alex! Cellular just dropped since we left port, good thing the ship Wi-Fi LAN still routes local peers.',
-        time: '12:41 PM',
-        dateGroup: 'TODAY',
+        text: 'Automatic peer discovery across local Wi-Fi (including multi-subnet networks) and peer-to-peer Wi-Fi Direct when no router is available.',
       },
       {
-        id: 'm2',
-        sender: 'me',
-        text: 'Right? Zero internet needed. Sending over the deck itinerary PDF and raw photos now.',
-        time: '12:43 PM',
-        dateGroup: 'TODAY',
-        status: 'read',
+        text: 'Built-in control to disable Wi-Fi Direct discovery whenever you want to stay invisible to nearby Wi-Fi Direct scans.',
       },
       {
-        id: 'm3',
-        sender: 'me',
-        text: 'Original file attached directly over Wi-Fi.',
-        time: '12:44 PM',
-        dateGroup: 'TODAY',
-        status: 'read',
-        attachment: {
-          name: 'Cruise_Excursion_Map_2026.pdf',
-          size: '14.8 MB',
-          sha256Short: '9f86d081...e44a1c',
-          kind: 'document',
-        },
+        text: 'Real-time typing indicators, delivery and read receipts, replies, reactions, and QR code contact verification.',
+      },
+    ],
+    footerMeta: 'Local Wi-Fi LAN · Multi-Subnet Discovery · Wi-Fi Direct Visibility Control',
+  },
+  {
+    index: '02',
+    title: 'Fast Local Media & File Sharing',
+    headline: 'Full local-network speed without cloud upload limits',
+    spanWide: false,
+    bullets: [
+      {
+        text: 'Send photos, videos, audio clips, and documents at full local network speed without cloud upload limits or compression delays.',
       },
       {
-        id: 'm4',
-        sender: 'them',
-        replyTo: 'Cruise_Excursion_Map_2026.pdf',
-        text: 'Got it in 2 seconds at full quality! Calling you from Observation Lounge in five.',
-        time: '12:49 PM',
-        dateGroup: 'TODAY',
+        text: 'Organize and save received media cleanly into your chosen device folder using Android’s Storage Access Framework.',
+      },
+    ],
+    footerMeta: 'Zero Cloud Caps · Android Photo Picker & SAF',
+  },
+  {
+    index: '03',
+    title: 'Encrypted Local Backups You Own',
+    headline: 'Identity-bound local archives stored only where you choose',
+    spanWide: false,
+    bullets: [
+      {
+        text: 'Back up your contacts, chat history, and media directly to a folder you choose on your device or external storage.',
+      },
+      {
+        text: 'Backups are encrypted and bound to your account identity so only Meshly on your verified account can restore them—with automatic deduplication when merging restored contacts and live peers.',
+      },
+    ],
+    footerMeta: 'Encrypted Archives · Automatic Peer Deduplication',
+  },
+  {
+    index: '04',
+    title: 'HD Peer-to-Peer Voice & Video Calling',
+    headline: '48 kHz HD voice, hardware-accelerated video, and effortless multitasking',
+    spanWide: true,
+    bullets: [
+      {
+        text: 'Direct local 48 kHz HD voice and hardware-accelerated video calls with automatic route switching between Wi-Fi LAN and Wi-Fi Direct.',
+      },
+      {
+        label: 'Call Multitasking & Picture-in-Picture',
+        text: 'Minimize active voice or video calls to browse chats and messages inside Meshly using a floating video window, or switch apps with Android System Picture-in-Picture without interrupting audio or video.',
+      },
+      {
+        label: 'Smart Call Ergonomics',
+        text: 'Automatic ear-proximity screen-off during voice calls, double-tap video zoom (Fill Screen / Fit to Screen), and Silent Call Waiting that notifies callers when you are on another call while giving you a silent option to Switch or Decline.',
+      },
+    ],
+    footerMeta: '48 kHz HD Voice · System Picture-in-Picture · Silent Call Waiting',
+  },
+];
+
+export const IDEAL_FOR_PROFILES: IdealForProfile[] = [
+  {
+    index: '01',
+    audience: 'Homes & Families',
+    description:
+      'Instant intercom-style voice/video calls and messaging across rooms without relying on internet bandwidth.',
+  },
+  {
+    index: '02',
+    audience: 'Offices, Studios & Campuses',
+    description:
+      'Share large files and coordinate teams over local Wi-Fi without uploading sensitive work to third-party servers.',
+  },
+  {
+    index: '03',
+    audience: 'Travel & Remote Areas',
+    description:
+      'Stay connected on flights, ships, road trips, and field sites with zero cellular or internet access.',
+  },
+];
+
+export const SECURITY_PROTECTIONS: SecurityProtectionItem[] = [
+  {
+    index: '01',
+    title: 'No Central Messaging Servers',
+    meta: 'Direct Device-to-Device Transport',
+    points: [
+      {
+        text: 'Meshly does not operate cloud servers to relay, store, or index your chats, calls, or contacts. All communication happens directly peer-to-peer over your local Wi-Fi network or Wi-Fi Direct.',
       },
     ],
   },
   {
-    id: 'chat-liam',
-    name: "Liam O'Connor",
-    initials: 'LO',
-    avatarTone: 'bg-[#1D3B4F] text-[#93C5FD]',
-    email: 'liam.oconnor@gmail.com',
-    localIp: '10.0.2.24',
-    verifiedGmail: true,
-    online: true,
-    typing: true,
-    unreadCount: 2,
-    lastMessage: 'Check Transfers tab — pushing 38.4 MB/s over 5GHz LAN!',
-    lastTimestamp: '12:51 PM',
-    messages: [
+    index: '02',
+    title: 'End-to-End Encryption by Default',
+    meta: 'ECDH / ECDSA secp256r1 · AES-256-GCM · HKDF-SHA256',
+    points: [
       {
-        id: 'l1',
-        sender: 'them',
-        text: 'Are you in Studio B? External ISP uplink is down across campus.',
-        time: '12:30 PM',
-        dateGroup: 'TODAY',
+        text: 'Every device generates its own elliptic-curve cryptographic identity (ECDH / ECDSA secp256r1).',
       },
       {
-        id: 'l2',
-        sender: 'me',
-        text: 'Yep, connected to the same Campus-West router.',
-        time: '12:32 PM',
-        dateGroup: 'TODAY',
-        status: 'read',
-      },
-      {
-        id: 'l3',
-        sender: 'them',
-        text: 'Awesome, transferring the 4K rough cut directly over LAN now.',
-        time: '12:50 PM',
-        dateGroup: 'TODAY',
-      },
-      {
-        id: 'l4',
-        sender: 'them',
-        text: 'Check Transfers tab — pushing 38.4 MB/s over 5GHz LAN!',
-        time: '12:51 PM',
-        dateGroup: 'TODAY',
+        text: 'Direct peer sessions derive unique AES-256-GCM encryption keys via ECDH + HKDF-SHA256, with cryptographic Safety Numbers and QR pairing so you can verify contacts and prevent man-in-the-middle attacks.',
       },
     ],
   },
   {
-    id: 'chat-priya',
-    name: 'Priya Nair',
-    initials: 'PN',
-    avatarTone: 'bg-[#362B48] text-[#D8B4FE]',
-    email: 'priya.nair@gmail.com',
-    localIp: '10.0.2.31',
-    verifiedGmail: true,
-    online: true,
-    unreadCount: 0,
-    lastMessage: 'Low-latency UDP right between phones. Let me know when the site walk wraps up.',
-    lastTimestamp: '11:20 AM',
-    messages: [
+    index: '03',
+    title: 'Protected Account Identity (Hidden by Default)',
+    meta: 'Encrypted Identity Tokens · Verified Private ID',
+    points: [
       {
-        id: 'p1',
-        sender: 'them',
-        text: 'Voice call audio was crystal clear over your mobile hotspot in the tunnel.',
-        time: '11:18 AM',
-        dateGroup: 'TODAY',
+        text: 'Your Google ID is stored and exchanged using encrypted identity tokens so Meshly can reliably recognize your contacts without duplicating them across networks.',
       },
       {
-        id: 'p2',
-        sender: 'me',
-        text: 'Low-latency UDP right between phones. Let me know when the site walk wraps up.',
-        time: '11:20 AM',
-        dateGroup: 'TODAY',
-        status: 'read',
+        label: 'Hidden by Default',
+        text: 'Other users cannot view your Google ID in your profile unless you explicitly turn on visibility in Settings. When hidden, peers see a Verified Private ID badge instead.',
       },
     ],
   },
   {
-    id: 'chat-marcus',
-    name: 'Marcus Vance',
-    initials: 'MV',
-    avatarTone: 'bg-[#3F3222] text-[#FCD34D]',
-    email: 'marcus.vance@gmail.com',
-    localIp: '10.0.2.09',
-    verifiedGmail: true,
-    online: false,
-    unreadCount: 0,
-    lastMessage: 'Scanned your QR code from gallery — paired immediately.',
-    lastTimestamp: 'Yesterday',
-    messages: [
+    index: '04',
+    title: 'Encrypted, User-Owned Backups',
+    meta: 'Identity-Bound Local Storage',
+    points: [
       {
-        id: 'mv1',
-        sender: 'them',
-        text: 'Scanned your QR code from gallery — paired immediately.',
-        time: '4:15 PM',
-        dateGroup: 'YESTERDAY',
-      },
-    ],
-  },
-  {
-    id: 'chat-elena',
-    name: 'Elena Rostova',
-    initials: 'ER',
-    avatarTone: 'bg-[#1F3A3D] text-[#5EEAD4]',
-    email: 'elena.rostova@gmail.com',
-    localIp: '10.0.2.42',
-    verifiedGmail: true,
-    online: true,
-    unreadCount: 0,
-    lastMessage: 'All site inspection photos saved straight to my local Meshly folder.',
-    lastTimestamp: 'Yesterday',
-    messages: [
-      {
-        id: 'e1',
-        sender: 'them',
-        text: 'All site inspection photos saved straight to my local Meshly folder.',
-        time: '2:08 PM',
-        dateGroup: 'YESTERDAY',
+        text: 'Local backups are saved only to a folder you explicitly select and are encrypted so only Meshly signed into your matching identity can read or restore them. You remain in complete control of where your backups live and can delete them at any time.',
       },
     ],
   },
 ];
 
-export const INITIAL_REQUESTS: PeerRequest[] = [
+export const PERMISSIONS_TABLE: PermissionItem[] = [
   {
-    id: 'req-noah',
-    name: 'Noah Patel',
-    initials: 'NP',
-    email: 'noah.patel@gmail.com',
-    localIp: '10.0.2.53',
-    discoveryMethod: 'mDNS (_meshly._tcp)',
-    note: 'Hey Alex, sitting two rows back on Flight 418 — can you send the slide deck?',
-    timestamp: 'Just now',
+    permission: 'Local Wi-Fi & Nearby Devices',
+    manifestId: 'NEARBY_WIFI_DEVICES (neverForLocation) · Wi-Fi Direct',
+    purpose:
+      'Used solely to discover and connect to peers on your local network or Wi-Fi Direct. NEARBY_WIFI_DEVICES is declared with neverForLocation on Android 13+; Android 10–12 requires system location permission solely for OS-level Wi-Fi Direct scanning, and Meshly never tracks, stores, or transmits your GPS location.',
   },
   {
-    id: 'req-hannah',
-    name: 'Hannah Kim',
-    initials: 'HK',
-    email: 'hannah.kim@gmail.com',
-    localIp: '10.0.2.61',
-    discoveryMethod: 'QR Code Pairing',
-    note: 'Connecting for the architecture review session on Floor 4 LAN.',
-    timestamp: '3m ago',
-  },
-];
-
-export const INITIAL_NEARBY_PEERS: NearbyPeer[] = [
-  {
-    id: 'peer-devon',
-    name: 'Devon Brooks',
-    initials: 'DB',
-    email: 'devon.brooks@gmail.com',
-    localIp: '10.0.2.77',
-    signalLabel: '10.0.2.0/24 • Port 42850',
-    requestSent: false,
+    permission: 'Camera & Microphone',
+    manifestId: 'CAMERA · RECORD_AUDIO',
+    purpose:
+      'Used only when you actively scan a QR code, capture media, or place/answer a voice or video call.',
   },
   {
-    id: 'peer-sofia',
-    name: 'Sofia Alvarez',
-    initials: 'SA',
-    email: 'sofia.alvarez@gmail.com',
-    localIp: '10.0.2.84',
-    signalLabel: '10.0.2.0/24 • Port 42850',
-    requestSent: false,
+    permission: 'Zero Broad Storage Access',
+    manifestId: 'Android Photo Picker · Storage Access Framework (SAF)',
+    purpose:
+      'Meshly uses the Android Photo Picker and Storage Access Framework (SAF), meaning it never requests blanket access to your entire photo gallery or filesystem.',
+  },
+  {
+    permission: 'Notifications',
+    manifestId: 'android.permission.POST_NOTIFICATIONS',
+    purpose: 'Used locally to alert you to incoming messages and calls.',
+  },
+  {
+    permission: 'Background Battery Optimization',
+    manifestId: 'android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS',
+    purpose:
+      'Allows Meshly to remain reachable on your local Wi-Fi or Wi-Fi Direct network in the background without Android Doze suspending peer discovery, incoming messages, file transfers, or calls.',
   },
 ];
 
-export const INITIAL_CALLS: CallRecord[] = [
-  {
-    id: 'call-1',
-    name: 'Maya Lin',
-    initials: 'ML',
-    localIp: '10.0.2.18',
-    mode: 'video',
-    direction: 'incoming',
-    timestamp: 'Today, 12:15 PM',
-    duration: '14m 22s',
-    latencyMs: 6,
-  },
-  {
-    id: 'call-2',
-    name: 'Priya Nair',
-    initials: 'PN',
-    localIp: '10.0.2.31',
-    mode: 'voice',
-    direction: 'outgoing',
-    timestamp: 'Today, 11:02 AM',
-    duration: '15m 40s',
-    latencyMs: 4,
-  },
-  {
-    id: 'call-3',
-    name: "Liam O'Connor",
-    initials: 'LO',
-    localIp: '10.0.2.24',
-    mode: 'video',
-    direction: 'outgoing',
-    timestamp: 'Yesterday, 5:48 PM',
-    duration: '08m 11s',
-    latencyMs: 5,
-  },
-  {
-    id: 'call-4',
-    name: 'Elena Rostova',
-    initials: 'ER',
-    localIp: '10.0.2.42',
-    mode: 'voice',
-    direction: 'incoming',
-    timestamp: 'Yesterday, 1:30 PM',
-    duration: '21m 05s',
-    latencyMs: 7,
-  },
-];
+export const OPTIONAL_ADS_DISCLOSURE = {
+  title: 'Optional Ads Disclosure (When Online)',
+  subtitle: '100% Offline Core · Optional User-Initiated Rewarded Ads',
+  points: [
+    'Meshly works 100% offline with zero internet required for messaging, calling, and file sharing.',
+    'Meshly includes the Google Mobile Ads (AdMob) SDK for optional, user-initiated rewarded ads when an internet connection is available. When your device is online and you interact with optional ad features, Google Mobile Ads may collect standard advertising identifiers and device diagnostics according to Google’s Privacy Policy. AdMob never has access to your Meshly messages, calls, contacts, encryption keys, or local files.',
+  ],
+};
 
-export const INITIAL_TRANSFERS: FileTransferItem[] = [
-  {
-    id: 'tx-1',
-    fileName: 'StudioB_RoughCut_4K.mp4',
-    peerName: "Liam O'Connor",
-    direction: 'receiving',
-    sizeLabel: '412 MB / 605 MB',
-    speedLabel: '38.4 MB/s',
-    progress: 68,
-    status: 'transferring',
-    sha256: 'Pending stream completion...',
-  },
-  {
-    id: 'tx-2',
-    fileName: 'Cruise_Excursion_Map_2026.pdf',
-    peerName: 'Maya Lin',
-    direction: 'sent',
-    sizeLabel: '14.8 MB',
-    speedLabel: 'Verified',
-    progress: 100,
-    status: 'verified',
-    sha256: '9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0e44a1c',
-  },
-  {
-    id: 'tx-3',
-    fileName: 'Field_Inspection_RAW_04.dng',
-    peerName: 'Elena Rostova',
-    direction: 'received',
-    sizeLabel: '42.1 MB',
-    speedLabel: 'Verified',
-    progress: 100,
-    status: 'verified',
-    sha256: '4b227777d4dd1fc61c6f884f48641d02b4d121d3fd328cb08b5531fcacdabf8a',
-  },
-];
-
-export const APP_SCREENSHOTS = [
+export const APP_SCREENSHOTS: AppScreenshot[] = [
   {
     id: 'screen-welcome',
-    title: 'Zero-Cloud Onboarding & Verified Identity',
+    title: 'Zero-Cloud Onboarding & Protected Identity',
     caption:
-      'Links your on-device Google Account so your First & Last Name are locked and verified for local discovery without creating an external cloud account.',
+      'Links your on-device Google Account using encrypted identity tokens so your profile is verified for local discovery—with your Google ID hidden by default behind a Verified Private ID badge.',
     assetSubpath: 'assets/aistudio/screenshot_1_f5c5b4d5.png',
-    meta: 'Onboarding · Verified Identity · Local Folder',
+    meta: 'Onboarding · Encrypted Identity · Local Folder',
   },
   {
     id: 'screen-chats',
-    title: 'Request-Gated Chats & Instant QR Pairing',
+    title: 'Offline Local Wi-Fi & Wi-Fi Direct Chats',
     caption:
-      'Active local Wi-Fi scanning via mDNS (_meshly._tcp) with request-based approval. Scan a peer QR code or discover People Nearby before any chat begins.',
+      'Automatic local Wi-Fi and peer-to-peer Wi-Fi Direct discovery with request-based approval, QR code verification, typing indicators, replies, and reactions.',
     assetSubpath: 'assets/aistudio/screenshot_2_0dc826c5.png',
-    meta: 'Chats Tab · mDNS Discovery · QR Scanner',
+    meta: 'Chats · Multi-Subnet & Wi-Fi Direct · QR Pairing',
   },
   {
     id: 'screen-settings',
-    title: 'Granular Permissions, Wallpapers & Direct IP',
+    title: 'Privacy Controls, Permissions & Local Backups',
     caption:
-      'Inspect your active LAN endpoint (IPv4 10.0.2.16 • Port 42850), manage Camera/Mic/Wi-Fi permissions, block Google IDs, or pick a local storage folder.',
+      'Inspect your active LAN endpoint, toggle Google ID visibility or Wi-Fi Direct discovery, manage minimal device permissions, and choose your SAF folder for encrypted local backups.',
     assetSubpath: 'assets/aistudio/screenshot_3_e239b91b.png',
-    meta: 'Settings · v1.2.0 · Direct IPv4 Socket',
+    meta: 'Settings · Privacy Controls · User-Owned Storage',
   },
 ];
 
-export const MESSENGER_STORE_LISTING: StoreListingVariant = {
-  id: 'variant-b',
-  label: 'Meshly: Local Wi-Fi Messenger',
-  appName: 'Meshly: Local Wi-Fi Messenger',
-  shortDescription: 'Chat, share files, and make voice or video calls over local Wi-Fi or Hotspot.',
-  fullDescription: `Meshly is a local peer-to-peer messenger that lets you chat, share photos, videos, and files, and make real-time voice and video calls with people on the same Wi-Fi network or mobile hotspot — with no internet connection or cloud servers required.
-
-WHY USE MESHLY?
-Whether you are traveling on a cruise ship or flight, staying at a hotel, working on a campus or job site with spotty internet, or collaborating in a home or office LAN, Meshly connects nearby Android devices directly over your local Wi-Fi router or phone hotspot.
-
-KEY FEATURES
-• Direct Local Messaging: Send instant messages with read receipts, typing indicators, message replies, and WhatsApp-style date headers over local Wi-Fi.
-• Request-Based Privacy & Block List: Incoming peers must be accepted before appearing in your active Chats list. Rejecting a request automatically blocks that user's Google ID across devices.
-• High-Speed Local File & Media Sharing: Transfer original-quality photos, videos, documents, and large files directly between phones at local Wi-Fi speeds, with automatic SHA-256 integrity verification and pause/resume support.
-• Local Voice & Video Calling: Place low-latency peer-to-peer audio and video calls over your local network, complete with mute, speakerphone, front/rear camera switching, and a dedicated Calls history tab.
-• Instant QR Code & Manual IP Pairing: Connect immediately by scanning another user's in-app QR code with your camera, picking a QR screenshot from your gallery, or entering a local IP address in Settings.
-• Custom Chat Wallpapers & Contact Info: Personalize your chat background with built-in color themes or custom gallery photos, and tap any contact's header to browse shared media, files, and verification details.
-• 100% On-Device Storage: All messages, call logs, and received files stay in your device's local storage or your chosen folder. No external cloud database is ever used.`,
-  category: 'Communication',
-  tags: ['Messaging', 'Communication', 'File Sharing', 'Network Tools'],
-  reviewerInstructions: `Meshly operates locally over Wi-Fi / LAN without requiring any backend server account.
-1. On the Welcome screen, tap "Get Started", enter any First Name, Last Name, and email identifier (or pick a device Google account), and tap "Launch Meshly".
-2. You can immediately explore Chats, Calls, People, Transfers, QR Code pairing, and Settings on a single device, or install the app on two devices on the same Wi-Fi network to test live P2P messaging, file transfers, and voice/video calling.`,
-  dataSafetySummary:
-    'Local P2P chats, calls, and files are never collected on developer servers. Declare third-party Advertising SDK data types in Data Safety when ads are active.',
-  dataSafetyNote:
-    'Play Console Data Safety guidance: Messages, call logs, and shared files stay strictly on-device / local P2P and are not collected. Because the app may contain ads, select "Yes" in Data Safety if using an ad SDK (e.g., Google AdMob) to declare Device or other IDs (Advertising ID), Diagnostics, and App interactions for Advertising/Analytics.',
-};
-
-export const STORE_LISTING_VARIANTS: StoreListingVariant[] = [MESSENGER_STORE_LISTING];
-
-export const PERMISSIONS_TABLE = [
-  {
-    permission: 'CAMERA',
-    manifestId: 'android.permission.CAMERA',
-    purpose:
-      'Used for scanning peer connection QR codes, taking photos to send in chat, and streaming live video during peer-to-peer video calls.',
-  },
-  {
-    permission: 'RECORD_AUDIO',
-    manifestId: 'android.permission.RECORD_AUDIO',
-    purpose: 'Used to capture microphone audio for live voice transmission during peer-to-peer voice and video calls.',
-  },
-  {
-    permission: 'NEARBY_WIFI_DEVICES',
-    manifestId: 'android.permission.NEARBY_WIFI_DEVICES (neverForLocation)',
-    purpose:
-      'Used strictly to discover nearby Meshly peers on the local Wi-Fi network without accessing or deriving physical location.',
-  },
-  {
-    permission: 'POST_NOTIFICATIONS',
-    manifestId: 'android.permission.POST_NOTIFICATIONS',
-    purpose: 'Used to alert the user of incoming local messages, file transfers, and voice/video calls.',
-  },
-  {
-    permission: 'BACKGROUND BATTERY',
-    manifestId: 'android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS',
-    purpose:
-      'Allows Meshly to remain reachable on your local Wi-Fi or hotspot in the background without Android Doze suspending mDNS peer discovery, incoming messages, file transfers, or calls.',
-  },
-  {
-    permission: 'LOCAL LAN & ADS',
-    manifestId: 'INTERNET · ACCESS_WIFI_STATE · CHANGE_WIFI_MULTICAST_STATE',
-    purpose:
-      'Used for local LAN TCP/UDP sockets and mDNS (_meshly._tcp) discovery on your local Wi-Fi or hotspot, plus ad delivery when internet connectivity is available.',
-  },
-];
-
-export const CHANGELOG_HIGHLIGHTS = [
+export const CHANGELOG_HIGHLIGHTS: ChangelogHighlight[] = [
   {
     tag: 'Connectivity',
     title: 'Bluetooth & Wi-Fi Direct Support',
@@ -505,7 +312,7 @@ export const CHANGELOG_HIGHLIGHTS = [
   },
 ];
 
-export const ENGINEERING_FIXES = [
+export const ENGINEERING_FIXES: EngineeringFix[] = [
   {
     index: '01',
     title: 'Background Coroutine Exception Handling & Dispatchers.IO Saturation',
@@ -530,25 +337,4 @@ export const ENGINEERING_FIXES = [
     resolution:
       'Bumped MeshlyDatabase to version = 3 with both fallbackToDestructiveMigration and fallbackToDestructiveMigrationOnDowngrade enabled for clean schema transitions.',
   },
-];
-
-export const COMPLIANCE_DECLARATIONS = [
-  { label: 'App or Game', value: 'App (Communication)' },
-  {
-    label: 'Pricing & Monetization',
-    value: 'Free download · No In-App Purchases',
-  },
-  {
-    label: 'Contains Ads Declaration',
-    value: 'Yes, may contain ads (Select "Yes, my app contains ads" in Play Console)',
-  },
-  {
-    label: 'Digital Goods Purchases (IARC)',
-    value: 'No · Does not offer in-app purchases',
-  },
-  { label: 'App Access', value: 'All core functionality available without access restrictions' },
-  { label: 'Target Age Group', value: '13–15, 16–17, 18 and over (Not directed to under 13 / No Families Policy trigger)' },
-  { label: 'IARC Content Rating', value: 'Social / Communication · No violence, sexuality, profanity, gambling, or substances' },
-  { label: 'Physical Location Sharing', value: 'No (NEARBY_WIFI_DEVICES declared with neverForLocation)' },
-  { label: 'Regulated Categories', value: 'Government, Financial, Health, COVID-19: No to all' },
 ];

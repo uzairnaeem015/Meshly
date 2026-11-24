@@ -19,7 +19,7 @@ export const PrivacyPolicySection: React.FC<PrivacyPolicySectionProps> = ({
         {isStandaloneMode && onExitStandalone && (
           <div className="mb-8 p-4 rounded-xl bg-[#131C20] border border-white/[0.08] flex flex-wrap items-center justify-between gap-4">
             <p className="text-xs sm:text-sm text-[#CBD5D9]">
-              Viewing standalone Privacy Policy page for Google Play Console verification.
+              Viewing standalone Privacy Policy page for Google Play Store verification.
             </p>
             <button
               type="button"
@@ -42,14 +42,16 @@ export const PrivacyPolicySection: React.FC<PrivacyPolicySectionProps> = ({
                 Privacy Policy for Meshly
               </h2>
               <p className="mt-2.5 text-sm text-[#94A3A8] leading-relaxed">
-                Hosted for Google Play Store compliance. Use the direct{' '}
+                Formal privacy policy aligned with Meshly’s zero-server encryption, hidden account
+                identity, encrypted backups, minimal permissions, and optional rewarded ads
+                disclosure. Direct standalone URL:{' '}
                 <a
                   href="?page=privacy"
                   className="text-[#00C48C] hover:underline underline-offset-4 font-mono text-xs"
                 >
                   ?page=privacy
-                </a>{' '}
-                endpoint in Google Play Console’s App Content &rarr; Privacy Policy field.
+                </a>
+                .
               </p>
             </div>
 
@@ -72,7 +74,7 @@ export const PrivacyPolicySection: React.FC<PrivacyPolicySectionProps> = ({
                         : 'text-[#94A3A8] hover:text-white'
                     }`}
                   >
-                    Detailed (SAF &amp; Keys)
+                    Detailed (E2EE &amp; SAF)
                   </button>
                   <button
                     type="button"
@@ -116,9 +118,9 @@ export const PrivacyPolicySection: React.FC<PrivacyPolicySectionProps> = ({
                 Messenger)
               </p>
               <p className="mt-4 text-sm sm:text-base text-[#CBD5D9] leading-relaxed">
-                {template === 'detailed'
-                  ? 'Meshly ("the App") is a local peer-to-peer communication application for Android. We respect your privacy and designed Meshly so that your conversations, files, and calls remain under your control on your local network.'
-                  : 'Meshly ("the App") is a local peer-to-peer communication application for Android. We are committed to protecting your privacy.'}
+                Meshly (&ldquo;the App&rdquo;) is built from the ground up as a local-first,
+                zero-server messenger for Android. Your messages, voice/video calls, contacts, and
+                files travel directly between your devices—never through Meshly cloud servers.
               </p>
             </header>
 
@@ -126,63 +128,128 @@ export const PrivacyPolicySection: React.FC<PrivacyPolicySectionProps> = ({
               <div className="space-y-6 text-sm sm:text-base text-[#CBD5D9] leading-relaxed">
                 <section>
                   <h4 className="text-base sm:text-lg font-display font-bold text-white">
-                    1. No Developer Cloud Servers for Conversations or Files
+                    1. No Central Messaging Servers
                   </h4>
                   <p className="mt-2 text-[#94A3A8]">
-                    Meshly does not use external developer servers or cloud databases to route or
-                    store your communications. We do not collect, store, sell, or transmit your
-                    personal messages, voice/video calls, call logs, or transferred files to any
-                    developer-operated server.
+                    Meshly does not operate cloud servers to relay, store, or index your chats,
+                    voice/video calls, call logs, contacts, or shared files. All communication
+                    happens directly peer-to-peer over your local Wi-Fi network (including
+                    multi-subnet networks) or peer-to-peer Wi-Fi Direct.
                   </p>
                 </section>
 
                 <section>
                   <h4 className="text-base sm:text-lg font-display font-bold text-white">
-                    2. Information Stored Locally on Your Device
+                    2. End-to-End Encryption by Default
                   </h4>
-                  <p className="mt-2 text-[#94A3A8]">
-                    All communication data generated or configured in Meshly is stored locally on
-                    your Android device:
-                  </p>
                   <ul className="mt-2.5 space-y-2 text-[#94A3A8] list-disc pl-5">
                     <li>
-                      <strong className="text-[#E2E8EB]">Profile Identity:</strong> Your chosen
-                      display name (first and last name), email identifier, profile photo, and
-                      locally generated cryptographic device keys.
+                      <strong className="text-[#E2E8EB]">Device Cryptographic Identity:</strong>{' '}
+                      Every device generates its own elliptic-curve cryptographic identity (
+                      <code className="text-xs text-[#00C48C]">ECDH / ECDSA secp256r1</code>).
                     </li>
                     <li>
-                      <strong className="text-[#E2E8EB]">Messages, Call Logs &amp; Files:</strong>{' '}
-                      Chat history, call history, and transferred media/files are stored exclusively
-                      in your device’s internal storage or the local folder you select via the
-                      Android Storage Access Framework.
+                      <strong className="text-[#E2E8EB]">Session Keys &amp; Safety Numbers:</strong>{' '}
+                      Direct peer sessions derive unique{' '}
+                      <code className="text-xs text-[#00C48C]">AES-256-GCM</code> encryption keys
+                      via <code className="text-xs text-[#00C48C]">ECDH + HKDF-SHA256</code>, with
+                      cryptographic Safety Numbers and QR pairing so you can verify contacts and
+                      prevent man-in-the-middle attacks.
                     </li>
                   </ul>
                 </section>
 
                 <section>
                   <h4 className="text-base sm:text-lg font-display font-bold text-white">
-                    3. Local Network Peer-to-Peer Communication
+                    3. Protected Account Identity (Hidden by Default)
                   </h4>
                   <p className="mt-2 text-[#94A3A8]">
-                    When you connect to a local Wi-Fi network or mobile hotspot while using Meshly,
-                    your device broadcasts your configured display name, email identifier, and
-                    cryptographic public key to other Meshly users on the same local network so they
-                    can discover you, verify your identity, and exchange messages, files, and
-                    voice/video calls directly device-to-device.
+                    Your Google ID is stored and exchanged using encrypted identity tokens so Meshly
+                    can reliably recognize your contacts without duplicating them across networks.
+                    Other users cannot view your Google ID in your profile unless you explicitly
+                    turn on visibility in Settings. When hidden, peers see a{' '}
+                    <strong className="text-[#E2E8EB]">Verified Private ID</strong> badge instead.
                   </p>
                 </section>
 
                 <section>
                   <h4 className="text-base sm:text-lg font-display font-bold text-white">
-                    4. Third-Party Advertising
+                    4. Encrypted, User-Owned Backups &amp; Local Storage
                   </h4>
                   <p className="mt-2 text-[#94A3A8]">
-                    Meshly is free to use with no in-app purchases and may display advertisements
-                    served by third-party ad networks (such as Google AdMob) when your device has
-                    internet connectivity. Advertising SDKs may collect and process your Android
-                    Advertising ID, coarse IP-based network state, and ad interaction diagnostics to
-                    serve and measure ads. You can opt out of personalized ads or reset/delete your
-                    Advertising ID anytime in{' '}
+                    All chat history, call logs, and transferred media remain exclusively on your
+                    device or in the folder you explicitly select via the Android Storage Access
+                    Framework (SAF). Local backups of your contacts, chat history, and media are
+                    saved only to a folder you choose and are encrypted and bound to your account
+                    identity so only Meshly signed into your matching verified account can read or
+                    restore them—with automatic deduplication when merging restored contacts and
+                    live peers. You remain in complete control of where your backups live and can
+                    delete them at any time.
+                  </p>
+                </section>
+
+                <section>
+                  <h4 className="text-base sm:text-lg font-display font-bold text-white">
+                    5. Minimal, Transparent Device Permissions
+                  </h4>
+                  <ul className="mt-2.5 space-y-2 text-[#94A3A8] list-disc pl-5">
+                    <li>
+                      <strong className="text-[#E2E8EB]">Local Wi-Fi &amp; Nearby Devices</strong> (
+                      <code className="text-xs text-[#00C48C]">
+                        android.permission.NEARBY_WIFI_DEVICES
+                      </code>
+                      ): Used solely to discover and connect to peers on your local network or Wi-Fi
+                      Direct. <code className="text-xs text-[#00C48C]">NEARBY_WIFI_DEVICES</code>{' '}
+                      is declared with{' '}
+                      <code className="text-xs text-[#00C48C]">neverForLocation</code> on Android
+                      13+; Android 10–12 requires system location permission solely for OS-level
+                      Wi-Fi Direct scanning, and Meshly never tracks, stores, or transmits your GPS
+                      location.
+                    </li>
+                    <li>
+                      <strong className="text-[#E2E8EB]">Camera &amp; Microphone</strong> (
+                      <code className="text-xs text-[#00C48C]">CAMERA</code>,{' '}
+                      <code className="text-xs text-[#00C48C]">RECORD_AUDIO</code>): Used only when
+                      you actively scan a QR code, capture media, or place/answer a voice or video
+                      call.
+                    </li>
+                    <li>
+                      <strong className="text-[#E2E8EB]">Zero Broad Storage Access:</strong> Meshly
+                      uses the Android Photo Picker and Storage Access Framework (SAF), meaning it
+                      never requests blanket access to your entire photo gallery or filesystem.
+                    </li>
+                    <li>
+                      <strong className="text-[#E2E8EB]">Notifications</strong> (
+                      <code className="text-xs text-[#00C48C]">
+                        android.permission.POST_NOTIFICATIONS
+                      </code>
+                      ): Used locally to alert you to incoming messages and calls.
+                    </li>
+                    <li>
+                      <strong className="text-[#E2E8EB]">Background Battery Optimization</strong> (
+                      <code className="text-xs text-[#00C48C]">
+                        android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS
+                      </code>
+                      ): Allows Meshly to stay reachable on your local Wi-Fi or Wi-Fi Direct network
+                      in the background without Android Doze suspending peer discovery, incoming
+                      messages, file transfers, or voice/video calls.
+                    </li>
+                  </ul>
+                </section>
+
+                <section>
+                  <h4 className="text-base sm:text-lg font-display font-bold text-white">
+                    6. Optional Ads Disclosure (When Online)
+                  </h4>
+                  <p className="mt-2 text-[#94A3A8]">
+                    Meshly works 100% offline with zero internet required for messaging, calling,
+                    and file sharing, and contains no in-app purchases. Meshly includes the Google
+                    Mobile Ads (AdMob) SDK for optional, user-initiated rewarded ads when an
+                    internet connection is available. When your device is online and you interact
+                    with optional ad features, Google Mobile Ads may collect standard advertising
+                    identifiers and device diagnostics according to Google’s Privacy Policy. AdMob
+                    never has access to your Meshly messages, calls, contacts, encryption keys, or
+                    local files. You can reset or delete your Android Advertising ID anytime in{' '}
                     <strong className="text-[#E2E8EB]">
                       Android Settings &rarr; Privacy &rarr; Ads
                     </strong>
@@ -192,58 +259,12 @@ export const PrivacyPolicySection: React.FC<PrivacyPolicySectionProps> = ({
 
                 <section>
                   <h4 className="text-base sm:text-lg font-display font-bold text-white">
-                    5. Permissions Used
-                  </h4>
-                  <ul className="mt-2.5 space-y-2 text-[#94A3A8] list-disc pl-5">
-                    <li>
-                      <strong className="text-[#E2E8EB]">Camera</strong> (
-                      <code className="text-xs text-[#00C48C]">android.permission.CAMERA</code>):
-                      Used only when you scan a peer’s QR code or participate in a local video call.
-                    </li>
-                    <li>
-                      <strong className="text-[#E2E8EB]">Microphone</strong> (
-                      <code className="text-xs text-[#00C48C]">
-                        android.permission.RECORD_AUDIO
-                      </code>
-                      ): Used only during active local voice or video calls.
-                    </li>
-                    <li>
-                      <strong className="text-[#E2E8EB]">Nearby Wi-Fi Devices &amp; Network</strong>{' '}
-                      (
-                      <code className="text-xs text-[#00C48C]">
-                        android.permission.NEARBY_WIFI_DEVICES
-                      </code>
-                      , <code className="text-xs text-[#00C48C]">INTERNET</code>,{' '}
-                      <code className="text-xs text-[#00C48C]">ACCESS_WIFI_STATE</code>): Used to
-                      discover and communicate with nearby devices on your local Wi-Fi or hotspot
-                      network, and when online to load advertisements.
-                    </li>
-                    <li>
-                      <strong className="text-[#E2E8EB]">Notifications</strong> (
-                      <code className="text-xs text-[#00C48C]">
-                        android.permission.POST_NOTIFICATIONS
-                      </code>
-                      ): Used to display alerts for incoming local messages and calls.
-                    </li>
-                    <li>
-                      <strong className="text-[#E2E8EB]">Background Battery Optimization</strong> (
-                      <code className="text-xs text-[#00C48C]">
-                        android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS
-                      </code>
-                      ): Allows Meshly to stay reachable on your local Wi-Fi or hotspot in the
-                      background without Android Doze suspending peer discovery, incoming messages,
-                      file transfers, or voice/video calls.
-                    </li>
-                  </ul>
-                </section>
-
-                <section>
-                  <h4 className="text-base sm:text-lg font-display font-bold text-white">
-                    6. Data Deletion
+                    7. Data Deletion
                   </h4>
                   <p className="mt-2 text-[#94A3A8]">
                     You can delete individual messages, clear call logs, manage blocked users,
-                    rotate your cryptographic keys, or wipe all local app data at any time from{' '}
+                    delete local backup files, rotate your cryptographic keys, or wipe all local app
+                    data at any time from{' '}
                     <strong className="text-[#E2E8EB]">
                       Settings &rarr; Storage &amp; Data &rarr; Wipe All Local App Data
                     </strong>
@@ -253,7 +274,7 @@ export const PrivacyPolicySection: React.FC<PrivacyPolicySectionProps> = ({
 
                 <section>
                   <h4 className="text-base sm:text-lg font-display font-bold text-white">
-                    7. Contact Us
+                    8. Contact Us
                   </h4>
                   <p className="mt-2 text-[#94A3A8]">
                     If you have questions about this Privacy Policy, please contact us at:{' '}
@@ -270,120 +291,99 @@ export const PrivacyPolicySection: React.FC<PrivacyPolicySectionProps> = ({
               <div className="space-y-6 text-sm sm:text-base text-[#CBD5D9] leading-relaxed">
                 <section>
                   <h4 className="text-base sm:text-lg font-display font-bold text-white">
-                    1. Local Peer-to-Peer Communication (No Developer Chat Servers)
+                    1. No Central Messaging Servers
                   </h4>
                   <p className="mt-2 text-[#94A3A8]">
-                    Meshly operates directly between devices on your local Wi-Fi network or mobile
-                    hotspot. We do not operate central messaging servers, and we do not collect,
-                    upload, store, or sell your personal messages, call logs, or shared files on
-                    developer servers.
+                    Meshly does not operate cloud servers to relay, store, or index your chats,
+                    calls, or contacts. All communication happens directly peer-to-peer over your
+                    local Wi-Fi network or Wi-Fi Direct.
                   </p>
                 </section>
 
                 <section>
                   <h4 className="text-base sm:text-lg font-display font-bold text-white">
-                    2. Information Stored Locally on Your Device
+                    2. Encryption, Protected Identity &amp; User-Owned Backups
                   </h4>
                   <ul className="mt-2.5 space-y-2 text-[#94A3A8] list-disc pl-5">
                     <li>
-                      <strong className="text-[#E2E8EB]">Profile Information:</strong> Your chosen
-                      display name, optional Google email identifier, and profile photo are stored
-                      locally on your device and shared only with peers on your local network to
-                      identify you during discovery and chat requests.
+                      <strong className="text-[#E2E8EB]">End-to-End Encryption by Default:</strong>{' '}
+                      Devices generate <code className="text-xs text-[#00C48C]">secp256r1</code>{' '}
+                      keys and derive unique{' '}
+                      <code className="text-xs text-[#00C48C]">AES-256-GCM</code> session keys via{' '}
+                      <code className="text-xs text-[#00C48C]">ECDH + HKDF-SHA256</code> with
+                      Safety Numbers and QR pairing.
                     </li>
                     <li>
-                      <strong className="text-[#E2E8EB]">Messages, Files, and Call Logs:</strong>{' '}
-                      All chat history, shared photos/videos/files, and call logs are stored locally
-                      on your device. You can delete individual messages, clear chats, clear call
-                      history, or wipe all local data at any time in{' '}
-                      <strong className="text-[#E2E8EB]">Settings &gt; Data &amp; Reset</strong>.
+                      <strong className="text-[#E2E8EB]">Hidden Google ID by Default:</strong>{' '}
+                      Exchanged via encrypted identity tokens; peers see a Verified Private ID badge
+                      unless you explicitly turn on Google ID visibility in Settings.
+                    </li>
+                    <li>
+                      <strong className="text-[#E2E8EB]">Encrypted Local Backups:</strong> Stored
+                      only in the folder you choose and encrypted to your matching verified account.
                     </li>
                   </ul>
                 </section>
 
                 <section>
                   <h4 className="text-base sm:text-lg font-display font-bold text-white">
-                    3. Third-Party Advertising
-                  </h4>
-                  <p className="mt-2 text-[#94A3A8]">
-                    Meshly is free with no in-app purchases and may display ads served by
-                    third-party advertising partners (such as Google AdMob) when internet access is
-                    available. Ad SDKs may process your Android Advertising ID and ad diagnostics to
-                    deliver and measure ads. You can reset or delete your Advertising ID anytime in{' '}
-                    <strong className="text-[#E2E8EB]">Settings &gt; Privacy &gt; Ads</strong>.
-                  </p>
-                </section>
-
-                <section>
-                  <h4 className="text-base sm:text-lg font-display font-bold text-white">
-                    4. Permissions Used
+                    3. Minimal, Transparent Device Permissions
                   </h4>
                   <ul className="mt-2.5 space-y-2 text-[#94A3A8] list-disc pl-5">
                     <li>
-                      <strong className="text-[#E2E8EB]">Camera</strong> (
-                      <code className="text-xs text-[#00C48C]">android.permission.CAMERA</code>):
-                      Used only when you scan a QR code, capture a photo in chat, or participate in
-                      a video call.
+                      <strong className="text-[#E2E8EB]">Local Wi-Fi &amp; Nearby Devices:</strong>{' '}
+                      <code className="text-xs text-[#00C48C]">NEARBY_WIFI_DEVICES</code>{' '}
+                      (<code className="text-xs text-[#00C48C]">neverForLocation</code> on Android
+                      13+; Android 10–12 uses system location only for OS Wi-Fi Direct scanning—never
+                      GPS tracking).
                     </li>
                     <li>
-                      <strong className="text-[#E2E8EB]">Microphone</strong> (
-                      <code className="text-xs text-[#00C48C]">
-                        android.permission.RECORD_AUDIO
-                      </code>
-                      ): Used only during active voice or video calls.
+                      <strong className="text-[#E2E8EB]">Camera &amp; Microphone:</strong> Only for
+                      QR scans, media capture, and active voice/video calls.
                     </li>
                     <li>
-                      <strong className="text-[#E2E8EB]">Nearby Wi-Fi Devices</strong> (
-                      <code className="text-xs text-[#00C48C]">
-                        android.permission.NEARBY_WIFI_DEVICES
-                      </code>
-                      ): Used to discover other Meshly users on your local network without
-                      determining your physical location.
+                      <strong className="text-[#E2E8EB]">Zero Broad Storage Access:</strong> Uses
+                      Android Photo Picker and Storage Access Framework (SAF) only.
                     </li>
                     <li>
-                      <strong className="text-[#E2E8EB]">Notifications</strong> (
+                      <strong className="text-[#E2E8EB]">Notifications &amp; Background Battery:</strong>{' '}
+                      <code className="text-xs text-[#00C48C]">POST_NOTIFICATIONS</code> for local
+                      alerts and{' '}
                       <code className="text-xs text-[#00C48C]">
-                        android.permission.POST_NOTIFICATIONS
-                      </code>
-                      ): Used to notify you of incoming messages and calls.
-                    </li>
-                    <li>
-                      <strong className="text-[#E2E8EB]">Background Battery Optimization</strong> (
-                      <code className="text-xs text-[#00C48C]">
-                        android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS
-                      </code>
-                      ): Allows Meshly to maintain uninterrupted local network reachability in the
-                      background so incoming messages, file transfers, and calls arrive reliably.
+                        REQUEST_IGNORE_BATTERY_OPTIMIZATIONS
+                      </code>{' '}
+                      to keep local LAN/Wi-Fi Direct reachability active in the background.
                     </li>
                   </ul>
                 </section>
 
                 <section>
                   <h4 className="text-base sm:text-lg font-display font-bold text-white">
-                    5. Data Deletion
+                    4. Optional Ads Disclosure (When Online)
                   </h4>
                   <p className="mt-2 text-[#94A3A8]">
-                    Because your conversations and files reside on your device, you have full
-                    control over them. You can erase all stored local data at any time from{' '}
-                    <strong className="text-[#E2E8EB]">
-                      Settings &gt; Data &amp; Reset &gt; Wipe All Local Data
-                    </strong>{' '}
-                    or by uninstalling the App.
+                    Meshly works 100% offline with zero internet required for messaging, calling,
+                    and file sharing, and has no in-app purchases. Optional, user-initiated rewarded
+                    ads use Google Mobile Ads (AdMob) when online; AdMob never has access to your
+                    Meshly messages, calls, contacts, encryption keys, or local files.
                   </p>
                 </section>
 
                 <section>
                   <h4 className="text-base sm:text-lg font-display font-bold text-white">
-                    6. Contact Us
+                    5. Data Deletion &amp; Contact
                   </h4>
                   <p className="mt-2 text-[#94A3A8]">
-                    If you have questions about this Privacy Policy, please contact us at:{' '}
+                    Erase all local data anytime in{' '}
+                    <strong className="text-[#E2E8EB]">Settings &rarr; Data &amp; Reset</strong> or
+                    by uninstalling the App. Questions? Email{' '}
                     <a
                       href={`mailto:${defaultEmail}`}
                       className="text-[#00C48C] underline underline-offset-4 font-mono text-sm"
                     >
                       {defaultEmail}
                     </a>
+                    .
                   </p>
                 </section>
               </div>

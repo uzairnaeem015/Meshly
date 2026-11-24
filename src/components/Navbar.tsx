@@ -26,13 +26,23 @@ export const Navbar: React.FC<NavbarProps> = ({ onShowAllSections }) => {
         </a>
 
         {/* Zone 2: 5 concise single-line text navigation links */}
-        <nav aria-label="Primary" className="hidden md:flex items-center gap-7 text-sm font-medium text-[#94A3A8]">
+        <nav
+          aria-label="Primary"
+          className="hidden md:flex items-center gap-7 text-sm font-medium text-[#94A3A8]"
+        >
           <a
             href="#features"
             onClick={handleNavClick}
             className="hover:text-[#F1F5F6] hover:underline underline-offset-4 transition-colors duration-150 whitespace-nowrap shrink-0"
           >
             Features
+          </a>
+          <a
+            href="#ideal-for"
+            onClick={handleNavClick}
+            className="hover:text-[#F1F5F6] hover:underline underline-offset-4 transition-colors duration-150 whitespace-nowrap shrink-0"
+          >
+            Ideal For
           </a>
           <a
             href="#screenshots"
@@ -42,11 +52,11 @@ export const Navbar: React.FC<NavbarProps> = ({ onShowAllSections }) => {
             Screenshots
           </a>
           <a
-            href="#play-console"
+            href="#security"
             onClick={handleNavClick}
             className="hover:text-[#F1F5F6] hover:underline underline-offset-4 transition-colors duration-150 whitespace-nowrap shrink-0"
           >
-            Play Listing
+            Security
           </a>
           <a
             href="#changelog"
@@ -55,23 +65,16 @@ export const Navbar: React.FC<NavbarProps> = ({ onShowAllSections }) => {
           >
             Changelog
           </a>
-          <a
-            href="#privacy"
-            onClick={handleNavClick}
-            className="hover:text-[#F1F5F6] hover:underline underline-offset-4 transition-colors duration-150 whitespace-nowrap shrink-0"
-          >
-            Privacy Policy
-          </a>
         </nav>
 
         {/* Zone 3: 1 primary action */}
         <div className="flex items-center gap-3 shrink-0">
           <a
-            href="#play-console"
+            href="#privacy"
             onClick={handleNavClick}
             className="hidden sm:inline-flex items-center justify-center px-4 py-2 text-xs font-semibold text-[#042319] bg-[#00C48C] hover:bg-[#1AD49E] rounded-lg transition-colors duration-150 whitespace-nowrap shrink-0 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#00C48C]"
           >
-            Play Store Kit
+            Privacy Policy
           </a>
           <button
             type="button"
@@ -93,16 +96,19 @@ export const Navbar: React.FC<NavbarProps> = ({ onShowAllSections }) => {
           <a href="#features" onClick={handleNavClick} className="py-2 hover:text-white">
             Features
           </a>
+          <a href="#ideal-for" onClick={handleNavClick} className="py-2 hover:text-white">
+            Ideal For
+          </a>
           <a href="#screenshots" onClick={handleNavClick} className="py-2 hover:text-white">
             Screenshots
           </a>
-          <a href="#play-console" onClick={handleNavClick} className="py-2 hover:text-white">
-            Play Listing
+          <a href="#security" onClick={handleNavClick} className="py-2 hover:text-white">
+            Security
           </a>
           <a href="#changelog" onClick={handleNavClick} className="py-2 hover:text-white">
             Changelog
           </a>
-          <a href="#privacy" onClick={handleNavClick} className="py-2 hover:text-white">
+          <a href="#privacy" onClick={handleNavClick} className="py-2 text-[#00C48C] font-semibold">
             Privacy Policy
           </a>
         </nav>
